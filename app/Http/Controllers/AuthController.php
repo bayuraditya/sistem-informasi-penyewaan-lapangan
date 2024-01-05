@@ -25,7 +25,7 @@ class AuthController extends Controller
             if (Auth::user()->role === 'admin') {
                 return redirect()->intended('/admin');
             } elseif (Auth::user()->role === 'customer') {
-                return redirect()->intended('/customer');
+                return redirect()->intended('/home');
             }
             
         }
@@ -55,6 +55,8 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'handphone_number' => 'required|string|max:20|unique:users',
+
         ]);
 
         // Membuat user baru
@@ -62,6 +64,8 @@ class AuthController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
+            'handphone_number' => $validatedData['handphone_number']
+
         ]);
 
         // Redirect ke halaman tertentu setelah registrasi berhasil

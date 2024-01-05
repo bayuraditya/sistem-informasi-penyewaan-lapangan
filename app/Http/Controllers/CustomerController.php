@@ -8,6 +8,6 @@ use PhpParser\Node\Expr\FuncCall;
 class CustomerController extends Controller
 {
     public function index(){
-        return view('customer.dashboard');
+        return view('customer.home');
     }
 }

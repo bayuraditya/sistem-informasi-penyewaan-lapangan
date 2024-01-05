@@ -17,27 +17,35 @@ use App\Http\Controllers\DashboardController;
 |
 */
 
-Route::get('/', function () {
-    return view('guest');
+
+
+Route::middleware(['guest'])->group(function () {
+    Route::get('/', function () {
+        return view('guest');
+    }); 
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+    
 });
 
 
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-
 
 Route::middleware(['auth'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     
-
     Route::middleware(['role:admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index']);
+        Route::get('/admin', [AdminController::class, 'index']);
 
     });
 
-    Route::get('/customer', [CustomerController::class, 'index']);
+    Route::middleware(['role:customer'])->group(function () {
+        Route::get('/home', [CustomerController::class, 'index']);
+    
+
+    });
+
 
 });
 
