@@ -20,7 +20,8 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password',
+        'role',
+        'password'
     ];
 
     /**
@@ -41,5 +42,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+    ];
+    protected $attributes = [
+        'role' => 'customer', // Nilai default untuk kolom 'role'
     ];
 }
