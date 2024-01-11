@@ -5,7 +5,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\CourtController;
+use App\Http\Controllers\ReservationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,15 +38,25 @@ Route::middleware(['auth'])->group(function () {
     
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/admin', [AdminController::class, 'index']);
-
+        
+        Route::prefix('admin')->group(function () {
+            Route::get('/courts', [CourtController::class, 'index'])->name('courts.index');
+            Route::get('/courts/create', [CourtController::class, 'create'])->name('courts.create');
+            Route::post('/courts', [CourtController::class, 'store'])->name('courts.store');
+            Route::get('/courts/{court}', [CourtController::class, 'show'])->name('courts.show');//ini keknya gaperlu
+            Route::get('/courts/{court}/edit', [CourtController::class, 'edit'])->name('courts.edit');
+            Route::put('/courts/{court}', [CourtController::class, 'update'])->name('courts.update');
+            Route::delete('/courts/{court}', [CourtController::class, 'destroy'])->name('courts.destroy');
+    
+        });
+        
     });
 
     Route::middleware(['role:customer'])->group(function () {
-        Route::get('/home', [CustomerController::class, 'index']);
-    
-
+        Route::get('/home', [ReservationController::class, 'index']);
+        Route::get('/available-courts', [ReservationController::class, 'available_courts']);
+        
     });
-
 
 });
 
