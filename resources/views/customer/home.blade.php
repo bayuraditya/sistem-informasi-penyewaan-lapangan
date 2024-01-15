@@ -17,11 +17,11 @@ HOME CUSTOMER
                     home - cek lapangan pilih tanggal,court - hasil cek lapangan, pilih jam - review order - pay - invoice
                  -->
 
-                 <div class="m-5 w-s">
+                 <div class="m-5 ">
                     <form method="GET" action="/available-courts">
-                        <div class="form-group">
+                        <div class="form-group w-25">
                             <label for="date">Pilih Tanggal:</label>
-                            <input type="date" class="form-control" id="date" name="date">
+                            <input type="date" class="form-control " id="date" name="date">
                             <br>
                             <label for="court">Pilih Lapangan:</label>
                             <select id="court" name="court" class="form-select" aria-label="Default select example">
@@ -30,6 +30,7 @@ HOME CUSTOMER
                                 @endforeach
                                 
                             </select>
+                            <br>
                             <button type="submit" class="btn btn-primary">Submit</button>
 
                         </div>

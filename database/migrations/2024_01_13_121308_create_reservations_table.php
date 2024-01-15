@@ -15,17 +15,19 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('court_id');
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
-            
-            $table->string('payment_status')->default('pending');
-            $table->decimal('total_amount', 10, 2);
-            $table->timestamps();
+            $table->unsignedBigInteger('rental_session_id');
+            $table->date('date');
+            // $table->dateTime('end_time');
+            // $table->string('payment_status')->default('pending');
+            // $table->decimal('total_amount', 10, 2);
+
 
             // Define foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('court_id')->references('id')->on('courts')->onDelete('cascade');
+            $table->foreign('rental_session_id')->references('id')->on('rental_sessions')->onDelete('cascade');
        
+            $table->timestamps();
         });
     }
 

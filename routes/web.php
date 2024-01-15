@@ -53,8 +53,10 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::middleware(['role:customer'])->group(function () {
-        Route::get('/home', [ReservationController::class, 'index']);
+        Route::get('/home', [ReservationController::class, 'index'])->name('home');
         Route::get('/available-courts', [ReservationController::class, 'available_courts']);
+        Route::post('/book', [ReservationController::class, 'store'])->name('reservation.store');
+        Route::post('/booking-detail', [ReservationController::class, 'booking_detail'])->name('booking_detail');
         
     });
 
