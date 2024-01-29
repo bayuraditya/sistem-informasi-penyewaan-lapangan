@@ -18,11 +18,9 @@ class Transaction extends Model
 
     public function reservations()
     {
-        return $this->belongsToMany(Reservation::class, 'orders');
+        return $this->belongsToMany(Reservation::class, 'reservation_transaction','transaction_id','reservation_id');
+
     }
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
+    
 }

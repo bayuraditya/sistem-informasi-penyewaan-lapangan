@@ -3,10 +3,9 @@
 @section('content')
 
 <div class="m-5">
-    <h1>Detail Pesanan</h1>
-  
-  
-    <form action="/checkout" method="post">
+    <h1>Pembayaran</h1>
+   
+    <form action="/pay" method="post">
         @csrf
     tanggal : {{$reservation->date}} <br>
     lapangan : {{$reservation->court->court_name}} <br>
@@ -27,12 +26,11 @@
             <!-- sesi : -->
              <input type="checkbox" name="rental_session_times[]" id="" value="{{$r}}" class="d-none"  checked> <br>
         @endforeach
-        
-            
-        <button type="submit" class="btn btn-primary" >Lanjutkan Pembayaran</button>
-
-    </form>
-
+        <input type="number" class="d-none" value="{{$transaction->id}}">
+        <button type="submit" class="btn btn-primary" id="pay-button">Selesaikan Pembayaran</button>
+    
+<!-- payment gateway snap -->
 </div>
+
 
 @endsection

@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CourtController;
 use App\Http\Controllers\ReservationController;
+use App\Models\Reservation;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -55,9 +57,13 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:customer'])->group(function () {
         Route::get('/home', [ReservationController::class, 'index'])->name('home');
         Route::get('/available-courts', [ReservationController::class, 'available_courts']);
-        Route::post('/book', [ReservationController::class, 'store'])->name('reservation.store');
-        Route::post('/booking-detail', [ReservationController::class, 'booking_detail'])->name('booking_detail');
+        Route::post('/book', [ReservationController::class, 'book'])->name('reservation.book');
+        Route::post('/checkout', [ReservationController::class, 'store'])->name('reservation.checkout');
+        Route::post('/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
+        // Route::post('/checkout', [ReservationController::class, 'checkout'])->name('checkout');
         
+        // Route::post('/checkout', [ReservationController::class, 'checkout']);
+        // Route::get('/invoice/{id}',[ReservationController::class, 'invoice']);
     });
 
 });

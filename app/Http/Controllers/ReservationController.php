@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Reservation;
 use App\Models\Court;
 use App\Models\RentalSession;
+use App\Models\Transaction;
+use App\Models\ReservationTransaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use DateTime;
@@ -57,23 +59,16 @@ class ReservationController extends Controller
         // Logika untuk menampilkan formulir pembuatan reservasi
     }
 
-    public function store(Request $request)
+    public function book(Request $request)
     {
         $rentalSession = RentalSession::all();
 
     //   dd($request->input('rental_session_time'));
         $reservation = new Reservation;
         $reservation->user_id=Auth::user()->id;
-        $reservation->rental_session_times = $request->input('rental_session_time');
+        $reservation->rental_session_times = $request->rental_session_times;
         $reservation->court_id = $request->court;
         $reservation->date = $request->date;
-        // foreach($rental_session_times as $rental_session_time){
-        //  $reservation->rental_session_id =$rental_session_time;
-        //  $reservation->save();   
-        //  $reservation->transactions()->attach($rental_session_time);
-        // }
-        // return redirect()->route('booking_detail');
-        // return view('customer.booking-detail', compact('reservation','rental_session_times'));
         return view('customer.booking-detail', compact('reservation','rentalSession'));
 
             // return redirect()->route('booking_detail');
@@ -81,8 +76,72 @@ class ReservationController extends Controller
     }
     public function booking_detail(Request $request)
     {
-        
+        //tess
     }
+    public function store(Request $request){
+    // create reservasi -> create transaksi -> each sesi,attach -> baru bisa snap bayar
+        // $reservation = new Reservation;
+        // $reservation->user_id=Auth::user()->id;
+        // $reservation->rental_session_times = $request->rental_session_times;
+        // $reservation->court_id = $request->court;
+        // $reservation->date = $request->date;
+       
+        date_default_timezone_set('Asia/Shanghai');
+        $date = $request->input('date');
+        $today = new DateTime();
+        $today = $today->format('Y-m-d');
+
+        $transaction = new Transaction;
+        $transaction->user_id=Auth::user()->id;
+        $transaction->total_amount = sizeof($request->rental_session_times)*40000;
+        $transaction->save();
+        $transaction_id = $transaction->id;
+
+        foreach($request->rental_session_times as $s){
+            $reservation = new Reservation;
+
+            $reservation->user_id=Auth::user()->id;
+            $reservation->rental_session_id = $s;
+            $reservation->court_id = $request->court;
+            $reservation->date = $request->date;
+            $reservation->save();
+            $reservation->transactions()->attach($transaction_id);
+        }
+        $reservation->rental_session_times = $request->rental_session_times;
+
+        
+        //payment gateway here
+        
+       return view('customer.checkout', compact('reservation','transaction'));
+    }
+
+    public function pay(Request $request){
+        // $request->request->add(['total_price' => $request->qty * 100, 'status' => 'Unpaid']);
+        // $order = Order::create($request->all());
+             // Set your Merchant Server Key
+             \Midtrans\Config::$serverKey = config('midtrans.server_key');
+             // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+             \Midtrans\Config::$isProduction = false;
+             // Set sanitization on (default)
+             \Midtrans\Config::$isSanitized = true;
+             // Set 3DS transaction for credit card to true
+             \Midtrans\Config::$is3ds = true;
+           dd($request);
+             //  $params = array(
+            //      'transaction_details' => array(
+            //          'order_id' => $order->id,
+            //          'gross_amount' => $order->total_price,
+            //      ),
+            //      'customer_details' => array(
+            //          'first_name' => $request->name ,
+            //          'last_name' => '',
+            //          'phone' => $request->phone,
+            //      ),
+            //  );
+            //  $snapToken = \Midtrans\Snap::getSnapToken($params); 
+             return view('checkout', compact('snapToken','order'));
+    }
+
     public function show($id)
     {
         $reservation = Reservation::find($id);

@@ -39,7 +39,7 @@
             @endphp
 
             @for($i=1;$i<=17;$i++)
-            <input class="form-check-input" type="checkbox" value="{{$i}}" id="flexCheckDefault" name="rental_session_time[]"
+            <input class="form-check-input" type="checkbox" value="{{$i}}" id="flexCheckDefault" name="rental_session_times[]"
             @foreach($reservations as $r)
                 @if($r->rental_session_id == $i)
                     disabled
@@ -53,8 +53,8 @@
 
             <br>
             @endfor
-<input type="text" class="visually-hidden" value="{{$court}}" name="court">
-<input type="text" class="visually-hidden" value="{{$date}}" name="date">
+            <input type="text" class="visually-hidden" value="{{$court}}" name="court">
+            <input type="text" class="visually-hidden" value="{{$date}}" name="date">
             <button type="submit" class="btn btn-primary">Book</button>
 
        </form>
