@@ -93,7 +93,7 @@ class ReservationController extends Controller
 
         $transaction = new Transaction;
         $transaction->user_id=Auth::user()->id;
-        $transaction->total_amount = sizeof($request->rental_session_times)*40000;
+        $transaction->total_amount = sizeof($request->rental_session_times);
         $transaction->save();
         $transaction_id = $transaction->id;
 
@@ -111,37 +111,77 @@ class ReservationController extends Controller
 
         
         //payment gateway here
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+        // \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isProduction = true;
+        // Set sanitization on (default)
+        \Midtrans\Config::$isSanitized = true;
+        // Set 3DS transaction for credit card to true
+        \Midtrans\Config::$is3ds = true;
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => $transaction_id,
+                'gross_amount' => $transaction->total_amount,
+            ),
+            'customer_details' => array(
+                'first_name' => Auth::user()->name,
+                'last_name' => '',
+                'phone' => Auth::user()->handphone_number,
+            ),
+        );
+        $snapToken = \Midtrans\Snap::getSnapToken($params); 
+       return view('customer.checkout', compact('reservation','transaction','snapToken'));
         
-       return view('customer.checkout', compact('reservation','transaction'));
     }
 
-    public function pay(Request $request){
-        // $request->request->add(['total_price' => $request->qty * 100, 'status' => 'Unpaid']);
-        // $order = Order::create($request->all());
-             // Set your Merchant Server Key
-             \Midtrans\Config::$serverKey = config('midtrans.server_key');
-             // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-             \Midtrans\Config::$isProduction = false;
-             // Set sanitization on (default)
-             \Midtrans\Config::$isSanitized = true;
-             // Set 3DS transaction for credit card to true
-             \Midtrans\Config::$is3ds = true;
-           dd($request);
-             //  $params = array(
-            //      'transaction_details' => array(
-            //          'order_id' => $order->id,
-            //          'gross_amount' => $order->total_price,
-            //      ),
-            //      'customer_details' => array(
-            //          'first_name' => $request->name ,
-            //          'last_name' => '',
-            //          'phone' => $request->phone,
-            //      ),
-            //  );
-            //  $snapToken = \Midtrans\Snap::getSnapToken($params); 
-             return view('checkout', compact('snapToken','order'));
+    // public function pay(Request $request){
+    //     // $request->request->add(['total_price' => $request->qty * 100, 'status' => 'Unpaid']);
+    //     // $order = Order::create($request->all());
+    //         $gross_amount = sizeof($request->rental_session_times)*40000;
+    //          // Set your Merchant Server Key
+    //          \Midtrans\Config::$serverKey = config('midtrans.server_key');
+    //          // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+    //          \Midtrans\Config::$isProduction = false;
+    //          // Set sanitization on (default)
+    //          \Midtrans\Config::$isSanitized = true;
+    //          // Set 3DS transaction for credit card to true
+    //          \Midtrans\Config::$is3ds = true;
+    //           $params = array(
+    //              'transaction_details' => array(
+    //                 //  'order_id' => $order->id,
+    //                  'order_id' => $request->transaction_id,
+    //                  'gross_amount' => $gross_amount,
+    //              ),
+    //              'customer_details' => array(
+    //                  'first_name' => Auth::user()->name,
+    //                  'last_name' => '',
+    //                  'phone' => Auth::user()->handphone_number,
+    //              ),
+    //          );
+    //          $snapToken = \Midtrans\Snap::getSnapToken($params); 
+    //          return view('customer.checkout', compact('snapToken'));
+
+    // }
+
+    public function invoice($id){
+       $transaction = Transaction::find($id);
+       
+       return view('customer.invoice',compact('transaction')); 
     }
 
+    public function callback(Request $request){
+        $serverKey = config('midtrans.server_key');
+        $hashed = hash("sha512", $request->order_id.$request->status_code.$request->gross_amount.$serverKey);
+        // return response()->json($request->signature_key);
+        if($hashed == $request->signature_key){
+            if($request->transaction_status == 'capture' or $request->transaction_status == 'settlement' ){
+                $transaction = Transaction::find($request->order_id);
+                $transaction->update(['payment_status' => $request->transaction_status]);
+            }
+        }
+    }
+  
     public function show($id)
     {
         $reservation = Reservation::find($id);

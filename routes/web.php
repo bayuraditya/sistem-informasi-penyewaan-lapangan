@@ -61,9 +61,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/checkout', [ReservationController::class, 'store'])->name('reservation.checkout');
         Route::post('/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
         // Route::post('/checkout', [ReservationController::class, 'checkout'])->name('checkout');
-        
         // Route::post('/checkout', [ReservationController::class, 'checkout']);
-        // Route::get('/invoice/{id}',[ReservationController::class, 'invoice']);
+        Route::get('/invoice/{id}',[ReservationController::class, 'invoice']);
     });
 
 });
