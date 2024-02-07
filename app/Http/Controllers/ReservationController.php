@@ -42,7 +42,19 @@ class ReservationController extends Controller
         ->where('court_id', $court)
         ->get();
 
-        // dd($reservations);
+        $unavailableReservations = Reservation::join('reservation_transaction', 'reservations.id', '=', 'reservation_transaction.reservation_id')
+        ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
+        ->select('reservations.*', 'transactions.*')
+        ->where('reservations.date', '=', $date)
+        ->where('reservations.court_id', '=', $court)
+        ->where(function($query) {
+            $query->where('transactions.payment_status', '=', 'settlement')
+                  ->orWhere('transactions.payment_status', '=', 'pending')
+                  ->orWhere('transactions.payment_status', '=', 'capture');
+        })
+        ->get();
+
+
         $today = new DateTime();
         $yesterday = $today->modify('-1 day');
         $yesterdayString = $yesterday->format('Y-m-d');
@@ -50,7 +62,7 @@ class ReservationController extends Controller
         if($date <= $yesterdayString){
             return redirect()->route('home');
         }else{
-            return view('customer.available-courts', compact('reservations','date','court'));
+            return view('customer.available-courts', compact('unavailableReservations','reservations','date','court'));
         }
     }
 
@@ -62,30 +74,20 @@ class ReservationController extends Controller
     public function book(Request $request)
     {
         $rentalSession = RentalSession::all();
-
-    //   dd($request->input('rental_session_time'));
         $reservation = new Reservation;
         $reservation->user_id=Auth::user()->id;
         $reservation->rental_session_times = $request->rental_session_times;
         $reservation->court_id = $request->court;
         $reservation->date = $request->date;
+        
         return view('customer.booking-detail', compact('reservation','rentalSession'));
-
-            // return redirect()->route('booking_detail');
-            
     }
     public function booking_detail(Request $request)
     {
         //tess
     }
     public function store(Request $request){
-    // create reservasi -> create transaksi -> each sesi,attach -> baru bisa snap bayar
-        // $reservation = new Reservation;
-        // $reservation->user_id=Auth::user()->id;
-        // $reservation->rental_session_times = $request->rental_session_times;
-        // $reservation->court_id = $request->court;
-        // $reservation->date = $request->date;
-       
+ 
         date_default_timezone_set('Asia/Shanghai');
         $date = $request->input('date');
         $today = new DateTime();
@@ -109,8 +111,8 @@ class ReservationController extends Controller
         }
         $reservation->rental_session_times = $request->rental_session_times;
 
-        
         //payment gateway here
+
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
         // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
         // \Midtrans\Config::$isProduction = false;
@@ -135,35 +137,6 @@ class ReservationController extends Controller
         
     }
 
-    // public function pay(Request $request){
-    //     // $request->request->add(['total_price' => $request->qty * 100, 'status' => 'Unpaid']);
-    //     // $order = Order::create($request->all());
-    //         $gross_amount = sizeof($request->rental_session_times)*40000;
-    //          // Set your Merchant Server Key
-    //          \Midtrans\Config::$serverKey = config('midtrans.server_key');
-    //          // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-    //          \Midtrans\Config::$isProduction = false;
-    //          // Set sanitization on (default)
-    //          \Midtrans\Config::$isSanitized = true;
-    //          // Set 3DS transaction for credit card to true
-    //          \Midtrans\Config::$is3ds = true;
-    //           $params = array(
-    //              'transaction_details' => array(
-    //                 //  'order_id' => $order->id,
-    //                  'order_id' => $request->transaction_id,
-    //                  'gross_amount' => $gross_amount,
-    //              ),
-    //              'customer_details' => array(
-    //                  'first_name' => Auth::user()->name,
-    //                  'last_name' => '',
-    //                  'phone' => Auth::user()->handphone_number,
-    //              ),
-    //          );
-    //          $snapToken = \Midtrans\Snap::getSnapToken($params); 
-    //          return view('customer.checkout', compact('snapToken'));
-
-    // }
-
     public function invoice($id){
        $transaction = Transaction::find($id);
        
@@ -174,12 +147,41 @@ class ReservationController extends Controller
         $serverKey = config('midtrans.server_key');
         $hashed = hash("sha512", $request->order_id.$request->status_code.$request->gross_amount.$serverKey);
         // return response()->json($request->signature_key);
+        $transactionData =[
+            'payment_method' => $request->payment_type,
+            'payment_status' => $request->transaction_status
+        ];
         if($hashed == $request->signature_key){
-            if($request->transaction_status == 'capture' or $request->transaction_status == 'settlement' ){
-                $transaction = Transaction::find($request->order_id);
-                $transaction->update(['payment_status' => $request->transaction_status]);
-            }
+            $transaction = Transaction::find($request->order_id);
+            $transaction->update($transactionData);
+
+            // if($request->transaction_status == 'capture' or $request->transaction_status == 'settlement' ){
+            //     $transaction = Transaction::find($request->order_id);
+            //     $transaction->update(['payment_status' => $request->transaction_status]);
+            // }
         }
+    }
+
+    public function recurring(Request $request){
+        $status = 'recurring';
+        return response()->json($status);
+    }
+    public function pay_account_notification(Request $request){
+        $status = 'pay_account_notification';
+        return response()->json($status);
+    }
+    public function finish(Request $request){
+        $status = 'finish';
+        return response()->json($status);
+    }
+    public function unfinish(Request $request){
+        $status = 'unfinish';
+        return response()->json($status);
+    }
+  
+    public function error(Request $request){
+        $status = 'error';
+        return response()->json($status);
     }
   
     public function show($id)

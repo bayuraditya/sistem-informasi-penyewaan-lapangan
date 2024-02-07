@@ -40,7 +40,7 @@
 
             @for($i=1;$i<=17;$i++)
             <input class="form-check-input" type="checkbox" value="{{$i}}" id="flexCheckDefault" name="rental_session_times[]"
-            @foreach($reservations as $r)
+            @foreach($unavailableReservations as $r)
                 @if($r->rental_session_id == $i)
                     disabled
                 @endif

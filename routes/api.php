@@ -20,4 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/midtrans-callback', [ReservationController::class, 'callback']);
+// Route::post('/midtrans-recurring', [ReservationController::class, 'recurring']);
+// Route::post('/midtrans-pay-account-notification', [ReservationController::class, 'pay_account_notification']);
+// Route::post('/midtrans-finish', [ReservationController::class, 'finish']);
+// Route::post('/midtrans-unfinish', [ReservationController::class, 'unfinish']);
+// Route::post('/midtrans-error', [ReservationController::class, 'error']);
+
 
