@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use DateTime;
 use DateInterval;
+use Psy\Readline\Transient;
+
 /*
     /home
     /cek lapangan
@@ -34,6 +36,27 @@ class ReservationController extends Controller
 
     }
     public function available_courts(Request $request){
+
+        //reset pending ke exp yg tidak payment
+        $now = new DateTime();
+        $nowDate = $now->format('Y-m-d H:i:s');
+        $transactionCreated = Transaction::Where('transactions.payment_status', '=', 'pending')->pluck('created_at');
+        foreach($transactionCreated as $tr){
+            // $transaction = Transaction::where('created_at', $tr)->get();
+            $transactionId = Transaction::where('created_at', $tr)->value('id');
+            $expireTime = date('Y-m-d H:i:s', strtotime($tr . '+15 minutes'));
+            // echo $now . '<br>'. $expireTime . '<br>';
+            if($expireTime < $nowDate){
+                $transactionData = [
+                    'payment_status' => 'expire'
+                ];
+                $transaction = Transaction::find($transactionId);;
+                $transaction->update($transactionData);
+                
+            }
+        }
+        // 
+
         date_default_timezone_set('Asia/Shanghai');
         $date = $request->input('date');
 
@@ -66,6 +89,7 @@ class ReservationController extends Controller
         }
     }
 
+    //book detail - save ke db return routes? -> selesaikan pembayaran
     public function create()
     {
         // Logika untuk menampilkan formulir pembuatan reservasi
