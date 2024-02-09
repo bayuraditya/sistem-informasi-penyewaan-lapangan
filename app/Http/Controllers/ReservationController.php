@@ -87,7 +87,6 @@ class ReservationController extends Controller
         //tess
     }
     public function store(Request $request){
- 
         date_default_timezone_set('Asia/Shanghai');
         $date = $request->input('date');
         $today = new DateTime();
@@ -134,7 +133,6 @@ class ReservationController extends Controller
         );
         $snapToken = \Midtrans\Snap::getSnapToken($params); 
        return view('customer.checkout', compact('reservation','transaction','snapToken'));
-        
     }
 
     public function invoice($id){
