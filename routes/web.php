@@ -42,14 +42,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin', [AdminController::class, 'index']);
         
         Route::prefix('admin')->group(function () {
-            Route::get('/courts', [CourtController::class, 'index'])->name('courts.index');
-            Route::get('/courts/create', [CourtController::class, 'create'])->name('courts.create');
-            Route::post('/courts', [CourtController::class, 'store'])->name('courts.store');
-            Route::get('/courts/{court}', [CourtController::class, 'show'])->name('courts.show');//ini keknya gaperlu
-            Route::get('/courts/{court}/edit', [CourtController::class, 'edit'])->name('courts.edit');
-            Route::put('/courts/{court}', [CourtController::class, 'update'])->name('courts.update');
-            Route::delete('/courts/{court}', [CourtController::class, 'destroy'])->name('courts.destroy');
-    
+            Route::prefix('court')->group(function(){
+                Route::get('/', [CourtController::class, 'index'])->name('courts.index');
+                Route::post('/create', [CourtController::class, 'create'])->name('court.create');
+                Route::post('/store', [CourtController::class, 'store'])->name('court.store');
+                Route::get('/{id}', [CourtController::class, 'show'])->name('court.show');//ini keknya gaperlu
+                Route::get('/{id}', [CourtController::class, 'edit'])->name('court.edit');
+                Route::put('/{id}', [CourtController::class, 'update'])->name('court.update');
+                Route::delete('/{id}', [CourtController::class, 'destroy'])->name('court.destroy');
+                
+            });
+         
+            Route::get('/reservations', [ReservationController::class, 'show'])->name('reservations.show');
+            
+
         });
         
     });

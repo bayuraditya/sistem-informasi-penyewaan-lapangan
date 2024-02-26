@@ -12,7 +12,7 @@ class CourtController extends Controller
     public function index()
     {
         $court = Court::all();
-        return view('admin.courts.index', compact('court'));
+        return view('admin.courts.index', compact(['court']));
        
     }
 
@@ -29,12 +29,11 @@ class CourtController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'court_name' => 'required',
-            // Tambahkan validasi lain jika diperlukan
-        ]);
+        $court = new Court();
+        $court->court_name = $request->court_name;
+        $court->description = $request->description;
 
-        Court::create($request->all());
+        $court->save();
 
         return redirect()->route('courts.index')
                          ->with('success', 'Court created successfully');
@@ -54,7 +53,9 @@ class CourtController extends Controller
      */
     public function edit($id)
     {
-        return view('courts.edit', compact('court'));
+        $allCourt = Court::all();
+        $court = Court::find($id);
+        return view('admin.courts.edit', compact('court','allCourt'));
     }
 
     /**
@@ -62,7 +63,15 @@ class CourtController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $court = Court::findOrFail($id);
+        $court->court_name = $request->court_name;
+        $court->description = $request->description;
+
+        $court->save();
+
+        return redirect()->route('courts.index')
+                         ->with('success', 'Court updated successfully');
+        
     }
 
     /**
@@ -70,6 +79,12 @@ class CourtController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $court = Court::findOrFail($id);
+        $court->delete();
+
+
+        return redirect()->route('courts.index')
+        ->with('success', 'Court deleted successfully');
+
     }
 }

@@ -25,7 +25,7 @@ return new class extends Migration
             // Define foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('court_id')->references('id')->on('courts')->onDelete('cascade');
-            $table->foreign('rental_session_id')->references('id')->on('rental_sessions')->onDelete('cascade');
+            $table->foreign('rental_session_id')->references('id')->on('rental_sessions')->onDelete('NO ACTION');
        
             $table->timestamps();
         });

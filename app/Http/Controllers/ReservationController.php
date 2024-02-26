@@ -113,14 +113,17 @@ class ReservationController extends Controller
     public function store(Request $request){
         date_default_timezone_set('Asia/Shanghai');
         $date = $request->input('date');
-        $today = new DateTime();
-        $today = $today->format('Y-m-d');
-
+        $todayDateTime = new DateTime();
+        $today = $todayDateTime->format('Y-m-d');
+        $now = $todayDateTime->format('Y-m-d H:i:s');
+       
         $transaction = new Transaction;
         $transaction->user_id=Auth::user()->id;
+        $transaction_id =  $transaction->user_id . strtotime($now);
+        $transaction->id = intval($transaction_id);
         $transaction->total_amount = sizeof($request->rental_session_times);
         $transaction->save();
-        $transaction_id = $transaction->id;
+        // ubah transaction id jadi kode unik ?
 
         foreach($request->rental_session_times as $s){
             $reservation = new Reservation;
@@ -144,7 +147,7 @@ class ReservationController extends Controller
         \Midtrans\Config::$isSanitized = true;
         // Set 3DS transaction for credit card to true
         \Midtrans\Config::$is3ds = true;
-        $params = array(
+        $orderDetails = array(
             'transaction_details' => array(
                 'order_id' => $transaction_id,
                 'gross_amount' => $transaction->total_amount,
@@ -155,8 +158,8 @@ class ReservationController extends Controller
                 'phone' => Auth::user()->handphone_number,
             ),
         );
-        $snapToken = \Midtrans\Snap::getSnapToken($params); 
-       return view('customer.checkout', compact('reservation','transaction','snapToken'));
+        $snapToken = \Midtrans\Snap::getSnapToken($orderDetails); 
+        return view('customer.checkout', compact('reservation','transaction','snapToken'));
     }
 
     public function invoice($id){
@@ -169,21 +172,29 @@ class ReservationController extends Controller
         $serverKey = config('midtrans.server_key');
         $hashed = hash("sha512", $request->order_id.$request->status_code.$request->gross_amount.$serverKey);
         // return response()->json($request->signature_key);
-        $transactionData =[
-            'payment_method' => $request->payment_type,
-            'payment_status' => $request->transaction_status
-        ];
+        // $transaction_time = $request->transaction_time;
+        // $settlement_time = $request->settlement_time;
+       
         if($hashed == $request->signature_key){
             $transaction = Transaction::find($request->order_id);
-            $transaction->update($transactionData);
-
+            // $transaction->update($transactionData);
+            $transaction->payment_method = $request->payment_type;
+            $transaction->payment_status = $request->transaction_status;
+            $transaction->transaction_time = $request->transaction_time;
+            $transaction->settlement_time = $request->settlement_time;
+            $transaction->save();
             // if($request->transaction_status == 'capture' or $request->transaction_status == 'settlement' ){
             //     $transaction = Transaction::find($request->order_id);
             //     $transaction->update(['payment_status' => $request->transaction_status]);
             // }
         }
-    }
 
+        return response()->json($transaction);
+    }
+// 
+// 
+// 
+// 
     public function recurring(Request $request){
         $status = 'recurring';
         return response()->json($status);
@@ -206,10 +217,27 @@ class ReservationController extends Controller
         return response()->json($status);
     }
   
-    public function show($id)
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+
+
+    public function show()
     {
-        $reservation = Reservation::find($id);
-        return view('reservations.show', ['reservation' => $reservation]);
+       
+        $reservations = Reservation::with('court', 'user', 'rentalSessions', 'transactions')
+        ->join('courts', 'reservations.court_id', '=', 'courts.id')
+        ->join('users', 'reservations.user_id', '=', 'users.id')
+        ->join('rental_sessions', 'reservations.rental_session_id', '=', 'rental_sessions.id')
+        ->join('reservation_transaction', 'reservations.id', '=', 'reservation_transaction.reservation_id')
+        ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
+        ->select('reservations.*', 'courts.*', 'users.*', 'rental_sessions.*', 'transactions.*')
+        ->get();
+
+        return view('admin.reservation', ['reservation' => $reservations]);
     }
 
     public function edit($id)

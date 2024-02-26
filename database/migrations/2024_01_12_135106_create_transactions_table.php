@@ -18,7 +18,8 @@ return new class extends Migration
             $table->decimal('total_amount');
             $table->string('payment_method')->nullable();
             $table->enum('payment_status', ['authorize', 'capture', 'settlement','deny','pending','cancel','refund','partial_refund','chargeback','partial_chargeback','expire','failure'])->default('pending');
-            $table->timestamp('payment_date');
+            $table->dateTime('transaction_time')->nullable();
+            $table->dateTime('settlement_time')->nullable();
             $table->timestamps();
         });
     }
