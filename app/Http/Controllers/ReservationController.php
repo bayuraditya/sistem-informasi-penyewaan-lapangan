@@ -225,20 +225,7 @@ class ReservationController extends Controller
     // 
 
 
-    public function show()
-    {
-       
-        $reservations = Reservation::with('court', 'user', 'rentalSessions', 'transactions')
-        ->join('courts', 'reservations.court_id', '=', 'courts.id')
-        ->join('users', 'reservations.user_id', '=', 'users.id')
-        ->join('rental_sessions', 'reservations.rental_session_id', '=', 'rental_sessions.id')
-        ->join('reservation_transaction', 'reservations.id', '=', 'reservation_transaction.reservation_id')
-        ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
-        ->select('reservations.*', 'courts.*', 'users.*', 'rental_sessions.*', 'transactions.*')
-        ->get();
-
-        return view('admin.reservation', ['reservation' => $reservations]);
-    }
+    
 
     public function edit($id)
     {

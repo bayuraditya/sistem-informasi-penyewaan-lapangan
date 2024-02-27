@@ -53,7 +53,7 @@ Route::middleware(['auth'])->group(function () {
                 
             });
          
-            Route::get('/reservations', [ReservationController::class, 'show'])->name('reservations.show');
+            Route::get('/reservations', [AdminController::class, 'reservation']);
             
 
         });

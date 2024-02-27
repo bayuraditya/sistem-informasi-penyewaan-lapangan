@@ -5,7 +5,7 @@ dashboard admin
                         @csrf
                         <button type="submit" class="btn btn-danger">{{ __('Logout') }}</button>
                     </form> <br>
-                    <a href="admin/reservations" class="btn btn-primary">Data Reservasi</a>
+                    <a href="admin/reservations?date={{$today}}&court_id={{$court->id}}" class="btn btn-primary">Data Reservasi</a>
                     <a href="admin/court" class="btn btn-primary">Data Lapangan</a>
 
 @endsection

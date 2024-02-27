@@ -42,10 +42,10 @@
         <td>{{$court->description}}</td>
         <td>
             <a href="/admin/court/{{$court->id}}" type="submit" class="btn btn-warning">Edit</a>
-            <form action="/admin/court/destoy/{{$court->id}}" method="POST">
-              @csrf
-            
-              <input class="btn btn-danger" type="submit" value="delete">
+            <form action="{{ route('court.destroy', $c->id) }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <input onclick="return confirm('Are you sure you want delete {{$c->court_name}} ?')" type="submit" class="btn btn-danger" value="DELETE">
           </form>
         </td>
       </tr>
