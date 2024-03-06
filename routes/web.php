@@ -54,6 +54,8 @@ Route::middleware(['auth'])->group(function () {
             });
          
             Route::get('/reservations', [AdminController::class, 'reservation']);
+            Route::get('/profit', [AdminController::class, 'profit']);
+            Route::get('/transaction', [AdminController::class, 'transaction']);
             
 
         });

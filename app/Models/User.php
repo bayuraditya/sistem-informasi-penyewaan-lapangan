@@ -47,4 +47,13 @@ class User extends Authenticatable
     protected $attributes = [
         'role' => 'customer', // Nilai default untuk kolom 'role'
     ];
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

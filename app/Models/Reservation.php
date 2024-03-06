@@ -22,7 +22,7 @@ class Reservation extends Model
         return $this->belongsTo(Court::class);
     }
 
-    public function rentalSessions()
+    public function rentalSession()
     {
         return $this->belongsTo(RentalSession::class);
     }

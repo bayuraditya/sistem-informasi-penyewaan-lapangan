@@ -2,6 +2,8 @@
 @section('content')
 
 <div class="m-5">
+<a href="/admin" class="btn btn-primary">HOME</a> <br><br>
+
 @if(session('success'))
     <div class="alert alert-success" role="alert">
         {{ session('success') }}

@@ -2,11 +2,14 @@
 @section('content')
 
 <div class="m-5">
+<a href="/admin" class="btn btn-primary">HOME</a> <br><br>
+
 @if(session('success'))
     <div class="alert alert-success" role="alert">
         {{ session('success') }}
     </div>
 @endif
+
   <form action="/admin/court/{{$court->id}}" method="post">
     @csrf
     @method('PUT')
@@ -42,10 +45,10 @@
         <td>{{$court->description}}</td>
         <td>
             <a href="/admin/court/{{$court->id}}" type="submit" class="btn btn-warning">Edit</a>
-            <form action="{{ route('court.destroy', $c->id) }}" method="POST">
+            <form action="{{ route('court.destroy', $court->id) }}" method="POST">
             @csrf
             @method('DELETE')
-            <input onclick="return confirm('Are you sure you want delete {{$c->court_name}} ?')" type="submit" class="btn btn-danger" value="DELETE">
+            <input onclick="return confirm('Are you sure you want delete {{$court->court_name}} ?')" type="submit" class="btn btn-danger" value="DELETE">
           </form>
         </td>
       </tr>

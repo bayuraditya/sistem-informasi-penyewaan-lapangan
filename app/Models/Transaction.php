@@ -11,6 +11,11 @@ class Transaction extends Model
 
     Protected $fillable = ['user_id', 'payment_method', 'total_amount', 'payment_date', 'total_session', 'payment_status'];
 
+    // public function users()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
+
     public function user()
     {
         return $this->belongsTo(User::class);
