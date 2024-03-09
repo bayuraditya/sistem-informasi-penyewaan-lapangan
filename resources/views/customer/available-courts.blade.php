@@ -6,7 +6,9 @@
             <h1>Pilih Sesi</h1>
        <form action="/book" method="POST">
             @csrf
-{{--
+          
+            
+{{--    
             <!-- @php
                 $j=8;
             @endphp
@@ -38,22 +40,28 @@
             $j=7;
             @endphp
 
-            @for($i=1;$i<=17;$i++)
-            <input class="form-check-input" type="checkbox" value="{{$i}}" id="flexCheckDefault" name="rental_session_times[]"
-            @foreach($unavailableReservations as $r)
-                @if($r->rental_session_id == $i)
-                    disabled
-                @endif
+            
+
+
+            @foreach($allCourt as $ac)
+                <h3>Lapangan  {{$ac->court_name}}</h3>
+                @foreach($rentalSessions as $re)
+                    <input
+                        @foreach($unavailableReservations as $ur)
+                            @if($ur->rental_session_id == $re->id && $ur->court_id == $ac->id)
+                            disabled
+                            @endif
+                        @endforeach
+
+                    type="checkbox" class="form-check-input" name="reservation[{{$ac->id}}][]" id="" value="{{$re->id}}" >
+                    <label for="">{{$re->rental_session_time}}</label>
+                      <br>
+                      <!-- <input type="text" class="visually-hidden" value="{{$court}}" name="court[]"> -->
+
+                @endforeach
+                <br><br><br>
             @endforeach
-            >
 
-            <label class="" for="">
-                {{$j}}.00 - {{++$j}}.00
-            </label>
-
-            <br>
-            @endfor
-            <input type="text" class="visually-hidden" value="{{$court}}" name="court">
             <input type="text" class="visually-hidden" value="{{$date}}" name="date">
             <button type="submit" class="btn btn-primary">Book</button>
 

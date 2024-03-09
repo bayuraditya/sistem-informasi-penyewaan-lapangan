@@ -23,13 +23,7 @@ HOME CUSTOMER
                             <label for="date">Pilih Tanggal:</label>
                             <input type="date" class="form-control " id="date" name="date">
                             <br>
-                            <label for="court">Pilih Lapangan:</label>
-                            <select id="court" name="court" class="form-select" aria-label="Default select example">
-                                @foreach($court as $court)
-                                    <option value="{{$court->id}}">{{$court->court_name}}</option>
-                                @endforeach
-                                
-                            </select>
+                            
                             <br>
                             <button type="submit" class="btn btn-primary">Submit</button>
 
