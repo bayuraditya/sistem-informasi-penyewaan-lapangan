@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('rental_sessions', function (Blueprint $table) {
             $table->id();
             $table->string('rental_session_time');
+            $table->double('price');
             $table->timestamps();
         });
     }

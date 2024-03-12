@@ -3,32 +3,75 @@
 @section('content')
 <div class="m-5">
     <h1>Pembayaran</h1>
-    tanggal : {{$order['date']}} <br>
+        tanggal : {{$order['date']}} <br>
 
-    @php
-    $i=1;
-    $sesi = 0;
-    @endphp
-    @foreach($order['reservation'] as $reservationIndex => $reservation)
-        @foreach($reservation as $reservationIndex2 => $reservation2)
-            {{$i++}} <br>
-            lapangan : {{$reservationIndex}} <br> 
-            sesi : {{$reservation2}} <br>
-            jam : {{$rentalSession[$reservation2]->rental_session_time}}
+        @php
+        $i=1;
+        $session = 0;
+        $totalPrice = 0;
+        @endphp
+        
+        @foreach($reservationDetail as $index => $reservation)   
+            @foreach($reservation as $courtId => $courts)
+                @foreach($courts['sesi'] as $rentalSessionId => $rentalSessionDetail)
+                    <table>
+                            <tr>
+                                <td>
+                                {{$i++}}. 
 
-            @php
-            $sesi++
-            @endphp
-            
-            <input type="checkbox" class="form-check-input d-none" name="reservation[{{$reservationIndex}}][]" id="" value="{{$reservation2}}" checked>
-    <br>
+                                </td>
+                                <td>
+                                    lapangan 
+                                </td>
+                                <td>
+                                    : {{$courts['court_name']}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+
+                                </td>
+                                <td>
+                                sesi 
+                                </td>
+                                <td>
+                                : {{$rentalSessionId}}    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+
+                                </td>
+                                <td>
+                                jam  
+                                </td>
+                                <td>
+                                : {{$rentalSessionDetail['time']}} 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                harga 
+                                </td>
+                                <td>
+                                : {{$rentalSessionDetail['price']}} 
+                                </td>
+                            </tr>
+                        </table>
+                        @php
+                        $totalPrice+=$rentalSessionDetail['price']
+                        @endphp
+                        <input type="checkbox" class="form-check-input d-none" name="reservation[{{$courtId}}][]" id="" value="{{$rentalSessionId}}" checked>
+                @endforeach
+            @endforeach
         @endforeach
-    @endforeach
 
-    <br>
+        <br>
 
-    total sesi :  {{$sesi}} <br>
-    total bayar : Rp{{$sesi*40000}}  <br>
+        total bayar : Rp{{$totalPrice}}  <br>
+
+
                 <button type="submit" class="btn btn-primary" id="pay-button">Selesaikan Pembayaran</button>
         
   
