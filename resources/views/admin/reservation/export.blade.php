@@ -11,41 +11,20 @@
     tabel : tanggal, court, nama, sesi, payment status, 
 
      -->
-     <p>User : {{$user->name}}</p>
-     <a href="/admin" class="btn btn-primary">HOME</a> <br><br>
-    <form id="logout-form" action="{{ route('logout') }}" method="POST">
-    @csrf
-        <button type="submit" class="btn btn-danger">{{ __('Logout') }}</button>
-    </form> 
+    
   <!-- tanggal dan court -->
-     <form action="reservations" method="get">
-        <label for="date">Pilih Tanggal</label>
-        <input type="date" name="date" id=""> <br>
-        <label for="court">Pilih Lapangan</label>
-        <select name="court_id" id="" >
-            @foreach($allCourt as $c)
-            <option value="{{$c->id}}">{{$c->court_name}}</option>
-            @endforeach
-        </select><br>
-        <input type="submit" value="Submit" class="btn btn-primary">
-     </form>
+   
 
 <br>
-<table>
-    <tbody>
-        <tr>
-            <td>Tanggal</td>
-            <td> : </td>
-            <td>{{$date}}</td>
-        </tr>
-        <tr>
-            <td>Lapangan</td>
-            <td> : </td>
-            <td>{{$court->court_name}}</td>
-        </tr>
-    </tbody>
-</table>
-<br>
+Tanggal : {{$date}} <br>
+Lapangan : {{$court->court_name}}
+<br> <br>
+<style>
+    table, th, td {
+  border: 1px solid;
+  border-collapse: collapse;
+}
+</style>
 <!-- default: tanggal hari ini, lapangan A -->
      <table class="table table-bordered">
         <thead>
@@ -121,6 +100,7 @@
                     @endif
                     @endforeach
                 </td>
+              
                 
            </tr>
            @endforeach
@@ -128,5 +108,30 @@
         </tbody>
     </table>
 </div>
-    
+
+<div class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Masukan Tanggal dan Nama Penyewa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/admin/reservation/available-courts" method="post">
+            <label for="date">Tanggal</label>
+            <input type="date">
+            <label for="name">Nama Penyewa</label>
+            <input type="text">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Lihat Ketersediaan Lapangan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
+
+
+

@@ -5,6 +5,42 @@
 <div class="m-5">
     <a href="/admin" class="btn btn-primary">HOME</a> <br><br>
     <h2>Data Transaksi</h2>
+    <br>
+
+    <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Cetak
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Cetak Data Transaksi</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/admin/transaction/export" method="post" >
+        @csrf
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Pilih Tanggal Awal</label>
+                <input type="date" name="start_date" id="">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Pilih Tanggal Awal</label>
+                <input type="date" name="end_date" id="">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Cetak</button>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+    <br><br>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -17,6 +53,7 @@
                 <td>Waktu transaksi</td>
                 <td>Waktu Transaksi Lunas</td>
                 <td>Detail Pesanan</td>
+                
             </tr>
         </thead>
         <tbody>
@@ -63,6 +100,7 @@
 
 
 <!-- Modal -->
+
 @foreach($transactions as $tr)
 <div class="modal fade" id="orderDetailModal_{{$tr->id}}" tabindex="-1" aria-labelledby="orderDetailModal" aria-hidden="true">
   <div class="modal-dialog">
@@ -76,7 +114,6 @@
         lapangan jam 
         -->
       
-    
     <table>
         <tbody>
                 @foreach($tr->reservations as $ts)

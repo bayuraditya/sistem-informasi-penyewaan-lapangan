@@ -29,15 +29,11 @@ class ReservationController extends Controller
 {
     public function index()
     {
-        // $user = Auth::user();
-        // $reservations = Reservation::where('user_id', $user->id)->get();
-        $court = Court::all();
-        return view('customer.home', compact('court'));
-
-
+        $user = Auth::user();
+        return view('customer.home',compact('user'));
     }
-    public function available_courts(Request $request){
 
+    public function available_courts(Request $request){
         //reset pending ke exp yg tidak payment
         $now = new DateTime();
         $nowDate = $now->format('Y-m-d H:i:s');
@@ -53,11 +49,9 @@ class ReservationController extends Controller
                 ];
                 $transaction = Transaction::find($transactionId);;
                 $transaction->update($transactionData);
-                
             }
         }
         // 
-
         date_default_timezone_set('Asia/Shanghai');
         $date = $request->input('date');
 
@@ -79,11 +73,6 @@ class ReservationController extends Controller
                   ->orWhere('transactions.payment_status', '=', 'capture');
         })
         ->get();
-        // foreach($unavailableReservations as $unavailableReservations){
-        //     echo $unavailableReservations->id . '<br>' ; 
-        
-        // }
-        // dd($unavailableReservations);
 
         $today = new DateTime();
         $yesterday = $today->modify('-1 day');
@@ -96,15 +85,7 @@ class ReservationController extends Controller
         }
     }
 
-    //book detail - save ke db return routes? -> selesaikan pembayaran
-    public function create()
-    {
-        // Logika untuk menampilkan formulir pembuatan reservasi
-    }
-
-    public function book(Request $request)
-    {
-      
+    public function book(Request $request){
         $rentalSession = RentalSession::all();
         $allCourt = Court::all();
         $order = array();
@@ -112,8 +93,6 @@ class ReservationController extends Controller
         
         $order['date'] = $request->date;
         $order['reservation'] = $request->reservation;
-
-    
             foreach ($order['reservation'] as $courtId => $sesiId) {
                 foreach ($sesiId as $key => $value) {
                     $reservation['court'][$courtId]['sesi'][$value] = [
@@ -121,18 +100,11 @@ class ReservationController extends Controller
                         'price' => RentalSession::where('id',$value)->select('price')->first()['price']
                     ];
                     $reservation['court'][$courtId]['court_name'] = Court::find($courtId)['court_name'];
-                
                 }
             }
-
-           
-            
         return view('customer.booking-detail', compact('reservation','order','rentalSession','allCourt'));
     }
-    public function booking_detail(Request $request)
-    {
-        //tess
-    }
+    
     public function store(Request $request){
         
         date_default_timezone_set('Asia/Shanghai');
@@ -151,6 +123,7 @@ class ReservationController extends Controller
             foreach($reservation as $index => $rentalSessionId){
                 $price =  RentalSession::where('id',$rentalSessionId)->select('price')->first()['price'];
                 $sandBoxPrice = 0;
+                // harga sementara selama pengembangan website
                 if($price == 40000){
                     $sandBoxPrice = 1;
                 }else if($price == 50000){
@@ -172,9 +145,7 @@ class ReservationController extends Controller
                  $reservation->date = $request->date;
                  $reservation->save();
                  $reservation->transactions()->attach($transaction_id);
-                 
                 }
-                
         }
         $order['reservation'] = $request->reservation;
             foreach ($order['reservation'] as $courtId => $sesiId) {
@@ -184,13 +155,9 @@ class ReservationController extends Controller
                         'price' => RentalSession::where('id',$value)->select('price')->first()['price']
                     ];
                     $reservationDetail['court'][$courtId]['court_name'] = Court::find($courtId)['court_name'];
-                
                 }
             }
-        // $reservation->rental_session_times = $request->rental_session_times;
-
         //payment gateway here
-
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
         // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
         // \Midtrans\Config::$isProduction = false;
@@ -219,31 +186,21 @@ class ReservationController extends Controller
 
     public function invoice($id){
        $transaction = Transaction::find($id);
-       
        return view('customer.invoice',compact('transaction')); 
     }
 
     public function callback(Request $request){
         $serverKey = config('midtrans.server_key');
         $hashed = hash("sha512", $request->order_id.$request->status_code.$request->gross_amount.$serverKey);
-        // return response()->json($request->signature_key);
-        // $transaction_time = $request->transaction_time;
-        // $settlement_time = $request->settlement_time;
-       
+     
         if($hashed == $request->signature_key){
             $transaction = Transaction::find($request->order_id);
-            // $transaction->update($transactionData);
             $transaction->payment_method = $request->payment_type;
             $transaction->payment_status = $request->transaction_status;
             $transaction->transaction_time = $request->transaction_time;
             $transaction->settlement_time = $request->settlement_time;
             $transaction->save();
-            // if($request->transaction_status == 'capture' or $request->transaction_status == 'settlement' ){
-            //     $transaction = Transaction::find($request->order_id);
-            //     $transaction->update(['payment_status' => $request->transaction_status]);
-            // }
         }
-
         return response()->json($transaction);
     }
 // 
@@ -279,13 +236,18 @@ class ReservationController extends Controller
     // 
     // 
 
+    public function create(){
+        $court = Court::all();
+        $rentalSession = RentalSession::all();
+        return view('admin.reservation.create',compact('court'));
+    }
 
     
 
     public function edit($id)
     {
         $reservation = Reservation::find($id);
-        return view('reservations.edit', ['reservation' => $reservation]);
+        return view('admin.reservation.edit', ['reservation' => $reservation]);
     }
 
     public function update(Request $request, $id)
@@ -314,8 +276,8 @@ class ReservationController extends Controller
 
     public function destroy($id)
     {
-        $reservation = Reservation::find($id);
-
+        $reservation = Reservation::findOrFail($id);
+        dd($id);
         if (!$reservation || $reservation->user_id !== Auth::id()) {
             return redirect()->route('reservations.index')->with('error', 'Reservasi tidak ditemukan atau Anda tidak memiliki izin.');
         }
@@ -323,5 +285,14 @@ class ReservationController extends Controller
         $reservation->delete();
 
         return redirect()->route('reservations.index')->with('success', 'Reservasi berhasil dihapus.');
+     
+        // $court = Court::findOrFail($id);
+        // $court->delete();
+
+
+        // return redirect()->route('courts.index')
+        // ->with('success', 'Court deleted successfully');
+
+
     }
 }

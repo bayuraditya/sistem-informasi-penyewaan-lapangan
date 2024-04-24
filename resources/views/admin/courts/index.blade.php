@@ -5,8 +5,9 @@
 <a href="/admin" class="btn btn-primary">HOME</a> <br><br>
 
 @if(session('success'))
-    <div class="alert alert-success" role="alert">
+    <div class="alert-success alert  alert-dismissible fade show" role="alert">
         {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
   <form action="court/store" method="post">
