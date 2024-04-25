@@ -2,15 +2,16 @@
 
 @section('content')
 <div class="m-5">
-    User : <a href="/profile">{{$user->name}}</a>
-    <h1>HOME CUSTOMER</h1>
+    User : <a href="/profile">{{$user->name}}</a> <br>
+    <a href="/dashboard">dashboard</a>
     <form id="logout-form" action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit" class="btn btn-danger">{{ __('Logout') }}</button>
     </form>
-
+<br><br><br>
     <form method="GET" action="/available-courts">
         <div class="form-group w-25">
+            <h4>BOOKING LAPANGAN</h4>
             <label for="date">Pilih Tanggal:</label>
             <input type="date" class="form-control " id="date" name="date">
             <br>

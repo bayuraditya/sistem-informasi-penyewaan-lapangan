@@ -74,8 +74,10 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('profile')->group(function(){
             Route::get('/', [CustomerController::class, 'edit'])->name('Customer.edit');
             Route::put('/update/{id}', [CustomerController::class, 'update'])->name('Customer.update');
-            Route::get('/change-password', [CustomerController::class, 'showChangePasswordForm']);
-            Route::put('/change-password/{id}', [CustomerController::class, 'changePassword']);
+            Route::get('/change-password', [CustomerController::class, 'showChangePasswordForm'])->name('showChangePasswordForm');
+            Route::put('/change-password/{id}', [CustomerController::class, 'changePassword'])->name('changePassword');
+            Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
+            
         });
     });
 });

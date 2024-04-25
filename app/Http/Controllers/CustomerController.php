@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
 
+use function Ramsey\Uuid\v1;
+
 class CustomerController extends Controller
 {
     public function edit(){
@@ -34,29 +36,46 @@ class CustomerController extends Controller
         $user = Auth::user();
         return view('customer.profile.change-password',compact('user'))->with('success', 'Profile updated successfully');
     }
-    public function changePassword(Request $request, $id){
-
-        // $request->validate([
-        //     'current_password' => 'required',
-        //     'new_password' => 'required|min:8|confirmed',
-        // ]);
-
-        // $user = Auth::user();
-        $user = User::findOrFail($id);
-        // cek input password lama dan password di database 
-        if (!Hash::check($request->current_password, $user->password)) {
-            // return redirect()->back()->with('error', 'Password saat ini tidak cocok.');
-            echo 'salah';
-        }else{
-            $user->password = Hash::make($request->new_password);
-            $user->save();
-            echo 'benar';
-        }
-
-        
-        // return redirect()->route('home')->with('success', 'Password berhasil diubah.');
+    public function changePassword(Request $request,$id)
+    {
+        // Validasi input
+        $validatedData = $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|different:current_password|confirmed',
+        ], [
+            'new_password.different' => 'Kata sandi baru harus berbeda dengan kata sandi saat ini.',
+            'new_password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+        ]);
     
+        // Dapatkan pengguna yang sedang login
+        $user = User::findOrFail($id);
+    
+        // Cek apakah password saat ini cocok dengan yang diinputkan
+        if (!Hash::check($validatedData['current_password'], $user->password)) {
+            // Kembali ke halaman sebelumnya dengan pesan error
+            return redirect()->back()->with('error', 'Kata sandi saat ini salah.');
+        }
+    
+        // Update password pengguna dengan password baru
+        $user->password = Hash::make($validatedData['new_password']);
+        $user->save();
+    
+        // Redirect dengan pesan sukses
+        return redirect()->route('showChangePasswordForm')->with('success', 'Kata sandi berhasil diubah.');
+    }
+    
+    public function dashboard(){
+
+        return view('customer.profile.dashboard');
+    }
+
+    public function reservationsHistory(){
+        
+    }
+        
+    public function transactionHistory(){
+
+    }
     
        
-    }
 }
