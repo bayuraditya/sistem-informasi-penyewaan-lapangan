@@ -3,7 +3,7 @@
 @section('content')
 <div class="m-5">
     User : <a href="/profile">{{$user->name}}</a> <br>
-    <a href="/dashboard">dashboard</a>
+    <a href="/profile/dashboard">dashboard</a>
     <form id="logout-form" action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit" class="btn btn-danger">{{ __('Logout') }}</button>

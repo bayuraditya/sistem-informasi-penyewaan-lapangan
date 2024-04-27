@@ -25,20 +25,18 @@ class AdminController extends Controller
     public function reservation(Request $request){
         // dd($request);
         $user = Auth::user();
-       $reservations = Transaction::with('reservations.court', 'reservations.user', 'reservations.rentalSession')
-    ->join('reservation_transaction', 'transactions.id', '=', 'reservation_transaction.transaction_id')
-    ->join('reservations', 'reservation_transaction.reservation_id', '=', 'reservations.id')
-    ->join('courts', 'reservations.court_id', '=', 'courts.id')
-    ->join('users', 'reservations.user_id', '=', 'users.id')
-    ->join('rental_sessions', 'reservations.rental_session_id', '=', 'rental_sessions.id')
-    ->where(function ($query) use ($request) {
-        $query->where('transactions.payment_status', 'settlement')
-            ->where('reservations.date', $request->date)
-            ->where('reservations.court_id', $request->court_id);
-    })
-    ->orWhere('transactions.payment_status', 'capture')
-    ->select('transactions.*', 'reservations.*', 'courts.*', 'users.*', 'rental_sessions.*')
-    ->get();
+        $reservations = Reservation::with('court', 'user', 'rentalSession', 'transactions')
+        ->join('courts', 'reservations.court_id', '=', 'courts.id')
+        ->join('users', 'reservations.user_id', '=', 'users.id')
+        ->join('rental_sessions', 'reservations.rental_session_id', '=', 'rental_sessions.id')
+        ->join('reservation_transaction', 'reservations.id', '=', 'reservation_transaction.reservation_id')
+        ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
+        ->where('transactions.payment_status', 'settlement') 
+        ->where('reservations.date', $request->date) 
+        ->where('reservations.court_id', $request->court_id) 
+        ->orWhere('transactions.payment_status', 'capture')
+        ->select('reservations.*', 'courts.*', 'users.*', 'rental_sessions.*', 'transactions.*')
+        ->get();
         dd($reservations);
         $date = $request->date;
         $now = new DateTime();

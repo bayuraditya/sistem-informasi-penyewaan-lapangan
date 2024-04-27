@@ -5,7 +5,6 @@
 <div class="m-5">
     <h1>Detail Pesanan</h1>
   
-  
     <form action="/checkout" method="post">
         @csrf
         tanggal : {{$order['date']}} <br>
@@ -77,8 +76,50 @@
         total bayar : Rp{{$totalPrice}}  <br>
 
         <input type="date" name="date" id=""value="{{$order['date']}}" class="d-none"  > <br>
-        <button type="submit" class="btn btn-primary" >Lanjutkan Pembayaran</button>
+       
+        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+        <label class="form-check-label" for="flexCheckDefault" >
+            Saya menyetujui <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal"> syarat dan ketentuan yang berlaku </a> 
+        </label>
+        <!-- modal s&k -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Syarat dan Ketentuan</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <ol class="list-group list-group-numbered">
+                    <li class="list-group-item">Reservasi tidak dapat dibatalkan atau direfund setelah pembayaran lunas.
+                    </li>
+                    <li class="list-group-item">Batas pelunasan adalah 5 menit setelah pesanan dibuat.
+                    </li>
+                    <li class="list-group-item">Jika setelah 5 menit pelunasan tidak dilakukan, maka pesanan akan dicancel otomatis.
+                    </li>
+                    </ol>
+                </p>
+            </div>
+            </div>
+        </div>
+        </div> <br>
+
+        <button type="submit" class="btn btn-primary" id="submitButton" disabled>Lanjutkan Pembayaran</button>
+        <script>
+            const checkbox = document.getElementById('flexCheckDefault');
+            const submitButton = document.getElementById('submitButton');
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    submitButton.disabled = false;
+                } else {
+                    submitButton.disabled = true;
+                }
+            });
+        </script>
+
    </form>
+
 
 </div>
 @endsection

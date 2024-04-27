@@ -50,6 +50,21 @@ Route::middleware(['auth'])->group(function () {
                 Route::put('/{id}', [CourtController::class, 'update'])->name('court.update');
                 Route::delete('/{id}', [CourtController::class, 'destroy'])->name('court.destroy');
             });
+            Route::prefix('reservation')->group(function(){
+                Route::get('/', [AdminController::class, 'reservation']);
+                Route::get('/available-courts', [ReservationController::class, 'available_courts']);
+                Route::post('/book', [ReservationController::class, 'book'])->name('reservation.book');
+                Route::post('/checkout', [ReservationController::class, 'store'])->name('reservation.checkout');
+                Route::post('/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
+                Route::get('/invoice/{id}',[ReservationController::class, 'invoice']);
+                
+                Route::get('/create', [ReservationController::class, 'create'])->name('reservation.create');
+                Route::post('/Manualstore', [ReservationController::class, 'Manualstore'])->name('reservation.store');
+                Route::get('/{id}', [ReservationController::class, 'show'])->name('reservation.show');//ini keknya gaperlu
+                Route::get('/{id}', [ReservationController::class, 'edit'])->name('reservation.edit');
+                Route::put('/{id}', [ReservationController::class, 'update'])->name('reservation.update');
+                Route::delete('/{id}', [ReservationController::class, 'destroy'])->name('reservation.destroy');
+            });
             Route::get('/profit', [AdminController::class, 'profit']);
             Route::prefix('transaction')->group(function(){
                 Route::get('/', [AdminController::class, 'transaction']);
