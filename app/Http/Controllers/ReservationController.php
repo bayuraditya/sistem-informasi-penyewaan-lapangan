@@ -131,7 +131,6 @@ class ReservationController extends Controller
                 }
                 $totalAmount+=$sandBoxPrice;
                 }
-                
         }
         $transaction->total_amount = $totalAmount;
         $transaction->save();

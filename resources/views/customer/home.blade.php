@@ -2,8 +2,18 @@
 
 @section('content')
 <div class="m-5">
-    User : <a href="/profile">{{$user->name}}</a> <br>
-    <a href="/profile/dashboard">dashboard</a>
+
+    <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Profile
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/profile">{{$user->name}}</a></li>
+        <li><a class="dropdown-item" href="/profile/reservation-history">Reservation History</a></li>
+        <li><a class="dropdown-item" href="/profile/transaction-history">Transaction History</a></li>
+    </ul>
+    </div>
+
     <form id="logout-form" action="{{ route('logout') }}" method="POST">
         @csrf
         <button type="submit" class="btn btn-danger">{{ __('Logout') }}</button>

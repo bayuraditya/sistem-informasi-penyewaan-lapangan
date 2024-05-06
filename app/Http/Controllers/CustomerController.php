@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Court;
+use App\Models\RentalSession;
+use App\Models\Reservation;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use DateTime;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
 
@@ -65,16 +70,42 @@ class CustomerController extends Controller
     }
     
     public function dashboard(){
-
-        return view('customer.profile.dashboard');
-    }
-
-    public function reservationsHistory(){
         
     }
+
+    public function reservationHistory(){
+        $user = Auth::user();
         
+        $reservations = Reservation::with('court', 'user', 'rentalSession', 'transactions')
+        ->join('courts', 'reservations.court_id', '=', 'courts.id')
+        ->join('users', 'reservations.user_id', '=', 'users.id')
+        ->join('rental_sessions', 'reservations.rental_session_id', '=', 'rental_sessions.id')
+        ->join('reservation_transaction', 'reservations.id', '=', 'reservation_transaction.reservation_id')
+        ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
+        // ->where('transactions.payment_status', 'settlement') 
+        // ->where('reservations.date', $request->date) 
+        // ->where('reservations.court_id', $request->court_id) 
+        // ->orWhere('transactions.payment_status', 'capture')
+        ->select( 'courts.*', 'users.*', 'rental_sessions.*', 'transactions.*','reservations.*')
+        ->selectRaw('reservations.id AS reservation_id, courts.id AS court_id, users.id AS user_id, rental_sessions.id AS rental_session_id, transactions.id AS transaction_id')    
+        ->where('users.id', $user->id)
+        ->get();
+        // dd($reservations[0]['transactions'][0]['payment_status']);
+      
+   
+        return view('customer.profile.reservation-history',compact('reservations','user'));
+    }
+
+    
+    
     public function transactionHistory(){
+        $user = Auth::user();
+        $transactions = Transaction::with(['user','reservations'])
+        ->orderBy('transaction_time', 'desc') 
+        ->where('user_id', $user->id)
+        ->get();
 
+        return view('customer.profile.transaction-history',compact('transactions','user'));
     }
     
        

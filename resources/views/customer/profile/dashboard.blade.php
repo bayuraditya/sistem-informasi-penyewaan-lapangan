@@ -9,5 +9,5 @@
             data reservasi, ada detail transaksi (modal)
 
 -->
-
+{{dd($reservations)}}
 @endsection

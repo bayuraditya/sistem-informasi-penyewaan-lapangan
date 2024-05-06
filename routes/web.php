@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', [AdminController::class, 'transaction']);
                 Route::post('/export', [ExportController::class, 'exportTransaction']);
             });
+            Route::get('/user/{id}', [AdminController::class, 'userDetail']);
         });
     });
 
@@ -91,7 +92,8 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/update/{id}', [CustomerController::class, 'update'])->name('Customer.update');
             Route::get('/change-password', [CustomerController::class, 'showChangePasswordForm'])->name('showChangePasswordForm');
             Route::put('/change-password/{id}', [CustomerController::class, 'changePassword'])->name('changePassword');
-            Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
+            Route::get('/reservation-history', [CustomerController::class, 'reservationHistory'])->name('reservationHistory');
+            Route::get('/transaction-history', [CustomerController::class, 'transactionHistory'])->name('transactionHistory');
             
         });
     });

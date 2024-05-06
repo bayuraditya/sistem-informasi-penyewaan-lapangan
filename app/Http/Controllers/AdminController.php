@@ -37,7 +37,7 @@ class AdminController extends Controller
         ->orWhere('transactions.payment_status', 'capture')
         ->select('reservations.*', 'courts.*', 'users.*', 'rental_sessions.*', 'transactions.*')
         ->get();
-        dd($reservations);
+        // dd($reservations);
         $date = $request->date;
         $now = new DateTime();
         $today = $now->format('Y-m-d');
@@ -91,11 +91,40 @@ class AdminController extends Controller
     }
     public function transaction(){
     
-        $transactions = Transaction::with(['user','reservations.court','reservations.rentalSession'])->get();
-        // dd($transactions);
+        $transactions = Transaction::with(['user','reservations.court','reservations.rentalSession'])
+        ->orderBy('transaction_time', 'desc') 
+        ->get();
+        // foreach($transactions[3]->reservations as $t){
+        //     echo $t->court->court_name;
+        // }
+        // dd($transactions[3]->reservations[0]->date );
+        return view('admin.transaction.index',compact('transactions'));
 
-        return view('admin.transaction.transactions',compact('transactions'));
 
+    }
 
+    public function userDetail($id){
+
+        $user = User::findOrFail($id);
+        $transactions = Transaction::with(['user','reservations.court','reservations.rentalSession'])
+        ->orderBy('transaction_time', 'desc')
+        ->where('user_id',$user->id)
+        ->get();
+        $reservations = Reservation::with('court', 'user', 'rentalSession', 'transactions')
+        ->join('courts', 'reservations.court_id', '=', 'courts.id')
+        ->join('users', 'reservations.user_id', '=', 'users.id')
+        ->join('rental_sessions', 'reservations.rental_session_id', '=', 'rental_sessions.id')
+        ->join('reservation_transaction', 'reservations.id', '=', 'reservation_transaction.reservation_id')
+        ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
+        // ->where('transactions.payment_status', 'settlement') 
+        // ->where('reservations.date', $request->date) 
+        // ->where('reservations.court_id', $request->court_id) 
+        // ->orWhere('transactions.payment_status', 'capture')
+        ->select( 'courts.*', 'users.*', 'rental_sessions.*', 'transactions.*','reservations.*')
+        ->selectRaw('reservations.id AS reservation_id, courts.id AS court_id, users.id AS user_id, rental_sessions.id AS rental_session_id, transactions.id AS transaction_id')    
+        ->where('users.id', $user->id)
+        ->get();
+        dd($reservations);
+        return view('admin.user.detail',compact('transactions','user'));
     }
 }
