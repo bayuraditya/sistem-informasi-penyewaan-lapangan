@@ -5,10 +5,10 @@
 
     <div class="dropdown">
     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Profile
+        {{$user->name}}
     </button>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/profile">{{$user->name}}</a></li>
+        <li><a class="dropdown-item" href="/profile">Profile</a></li>
         <li><a class="dropdown-item" href="/profile/reservation-history">Reservation History</a></li>
         <li><a class="dropdown-item" href="/profile/transaction-history">Transaction History</a></li>
     </ul>

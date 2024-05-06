@@ -3,42 +3,10 @@
 
 @section('content')
 <div class="m-5">
-    <a href="/admin" class="btn btn-primary">HOME</a> <br><br>
+    <a href="/home" class="btn btn-primary">HOME</a> <br><br>
     <h2>Data Transaksi</h2>
     <br>
 
-    <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  Cetak
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Cetak Data Transaksi</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="/admin/transaction/export" method="post" >
-        @csrf
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Pilih Tanggal Awal</label>
-                <input type="date" name="start_date" id="">
-            </div>
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Pilih Tanggal Awal</label>
-                <input type="date" name="end_date" id="">
-            </div>
-            
-            <button type="submit" class="btn btn-primary">Cetak</button>
-        </form>
-      </div>
-      
-    </div>
-  </div>
-</div>
 
     <br><br>
     <table class="table table-bordered">
@@ -46,7 +14,6 @@
             <tr>
                 <td>No</td>
                 <td>Id Transaksi</td>
-                <td>User</td>
                 <td>Total Bayar</td>
                 <td>Metode Pembayaran</td>
                 <td>Status Pembayaran</td>
@@ -61,9 +28,7 @@
             <tr>
                 <td>{{$loop->iteration}}</td>
                 <td>{{$tr->id}}</td>
-                <td>
-                <a href="/admin/user/{{$tr->user_id}}">{{$tr->user->name}}</a>    
-                </td>
+                
                 <td>Rp{{$tr->total_amount}}</td>
                 <td>{{$tr->payment_method}}</td>
                 <td>
