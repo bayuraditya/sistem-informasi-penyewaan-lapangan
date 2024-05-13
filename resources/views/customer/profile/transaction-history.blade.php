@@ -12,7 +12,6 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <td>No</td>
                 <td>Id Transaksi</td>
                 <td>Total Bayar</td>
                 <td>Metode Pembayaran</td>
@@ -26,9 +25,7 @@
         <tbody>
             @foreach($transactions as $tr)
             <tr>
-                <td>{{$loop->iteration}}</td>
                 <td>{{$tr->id}}</td>
-                
                 <td>Rp{{$tr->total_amount}}</td>
                 <td>{{$tr->payment_method}}</td>
                 <td>
@@ -84,14 +81,18 @@
                 @foreach($tr->reservations as $ts)
                 <tr>
                     <td>{{$loop->iteration}}</td>
+                    <td>Tanggal</td>
+                    <td> : {{$ts->date}}</td>
+                </tr>
+                <tr>
+                    <td></td>
                     <td> Lapangan</td>
                     <td> : {{$ts->court->court_name}}</td>
-                    
                 </tr>
                 <tr>
                     <td></td>
                     <td> Jam</td>
-                <td> : {{$ts->rentalSession->rental_session_time}}</td>
+                    <td> : {{$ts->rentalSession->rental_session_time}}</td>
                 
             </tr>
             @endforeach

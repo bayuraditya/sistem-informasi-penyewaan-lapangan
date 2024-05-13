@@ -29,8 +29,11 @@ class ReservationController extends Controller
 {
     public function index()
     {
+        // date_default_timezone_set('Asia/Shanghai');
+        $todayDateTime = new DateTime();
+        $todayDate = $todayDateTime->format('Y-m-d');
         $user = Auth::user();
-        return view('customer.home',compact('user'));
+        return view('customer.home',compact('user','todayDate'));
     }
 
     public function available_courts(Request $request){
@@ -106,7 +109,6 @@ class ReservationController extends Controller
     }
     
     public function store(Request $request){
-        
         date_default_timezone_set('Asia/Shanghai');
         $date = $request->input('date');
         $todayDateTime = new DateTime();
@@ -133,6 +135,29 @@ class ReservationController extends Controller
                 }
         }
         $transaction->total_amount = $totalAmount;
+         //payment gateway here
+         \Midtrans\Config::$serverKey = config('midtrans.server_key');
+         // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+         // \Midtrans\Config::$isProduction = false;
+         \Midtrans\Config::$isProduction = true;
+         // Set sanitization on (default)
+         \Midtrans\Config::$isSanitized = true;
+         // Set 3DS transaction for credit card to true
+         \Midtrans\Config::$is3ds = true;
+         $orderDetails = array(
+             'transaction_details' => array(
+                 'order_id' => $transaction_id,
+                 'gross_amount' => $transaction->total_amount,
+             ),
+             'customer_details' => array(
+                 'first_name' => Auth::user()->name,
+                 'last_name' => '',
+                 'phone' => Auth::user()->handphone_number,
+             ),
+         );
+         $order = $request;
+         $snapToken = \Midtrans\Snap::getSnapToken($orderDetails); 
+         $transaction->snapToken = $snapToken;
         $transaction->save();
         // ubah transaction id jadi kode unik ?
         foreach($request->reservation as $courtId => $reservation){
@@ -156,30 +181,10 @@ class ReservationController extends Controller
                     $reservationDetail['court'][$courtId]['court_name'] = Court::find($courtId)['court_name'];
                 }
             }
-        //payment gateway here
-        \Midtrans\Config::$serverKey = config('midtrans.server_key');
-        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-        // \Midtrans\Config::$isProduction = false;
-        \Midtrans\Config::$isProduction = true;
-        // Set sanitization on (default)
-        \Midtrans\Config::$isSanitized = true;
-        // Set 3DS transaction for credit card to true
-        \Midtrans\Config::$is3ds = true;
-        $orderDetails = array(
-            'transaction_details' => array(
-                'order_id' => $transaction_id,
-                'gross_amount' => $transaction->total_amount,
-            ),
-            'customer_details' => array(
-                'first_name' => Auth::user()->name,
-                'last_name' => '',
-                'phone' => Auth::user()->handphone_number,
-            ),
-        );
-        $order = $request;
-        $snapToken = \Midtrans\Snap::getSnapToken($orderDetails); 
+       
+        // $transaction->snapToken = $snapToken;
+        // $transaction->save();
         $rentalSession = RentalSession::all();
-
         return view('customer.checkout', compact('rentalSession','order','transaction','snapToken','reservationDetail'));
     }
 

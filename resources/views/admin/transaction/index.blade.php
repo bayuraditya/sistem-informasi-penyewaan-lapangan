@@ -114,10 +114,8 @@
         <!-- order detail here
         lapangan jam 
         -->
-      
     <table>
         <tbody>
-            
             @foreach($tr->reservations as $ts)
             <tr>
                 <td>{{$loop->iteration}}</td>

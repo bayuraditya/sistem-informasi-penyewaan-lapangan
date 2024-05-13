@@ -23,7 +23,7 @@
         <div class="form-group w-25">
             <h4>BOOKING LAPANGAN</h4>
             <label for="date">Pilih Tanggal:</label>
-            <input type="date" class="form-control " id="date" name="date">
+            <input type="date" class="form-control " id="date" name="date" value="{{$todayDate}}">
             <br>
             <br>
             <button type="submit" class="btn btn-primary">Submit</button>

@@ -89,6 +89,7 @@ class CustomerController extends Controller
         ->select( 'courts.*', 'users.*', 'rental_sessions.*', 'transactions.*','reservations.*')
         ->selectRaw('reservations.id AS reservation_id, courts.id AS court_id, users.id AS user_id, rental_sessions.id AS rental_session_id, transactions.id AS transaction_id')    
         ->where('users.id', $user->id)
+        ->orderBy('date', 'desc') 
         ->get();
         // dd($reservations[0]['transactions'][0]['payment_status']);
       
@@ -101,7 +102,7 @@ class CustomerController extends Controller
     public function transactionHistory(){
         $user = Auth::user();
         $transactions = Transaction::with(['user','reservations'])
-        ->orderBy('transaction_time', 'desc') 
+        ->orderBy('created_at', 'desc') 
         ->where('user_id', $user->id)
         ->get();
 

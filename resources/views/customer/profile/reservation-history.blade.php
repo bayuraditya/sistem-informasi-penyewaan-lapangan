@@ -1,5 +1,5 @@
 
-@extends('layouts.app')
+@extends('layouts.checkout-app')
 
 @section('content')
 <div class="m-5">
@@ -21,7 +21,6 @@
         <table class="table">
             <thead>
                 <tr>
-                <th scope="col">#</th>
                 <th scope="col">Tanggal</th>
                 <th scope="col">Jam</th>
                 <th scope="col">Lapangan</th>
@@ -32,7 +31,6 @@
             <tbody>
                 @foreach($reservations as $r)
                 <tr>
-                    <th >{{$loop->iteration}}</th>
                     <td>{{$r->date}}</td>
                     <td>{{$r->rental_session_time}}</td>
                     <td>{{$r->court_name}}</td>
@@ -81,7 +79,35 @@
                                             @if($t->payment_status == 'pending')
                                                 <tr>
                                                     <td>
-                                                        <button class="btn btn-primary">Bayar</button>
+                                                        <button type="submit" class="btn btn-primary" id="pay-button{{$t->id}}">Selesaikan Pembayaran</button>
+                                                       <!-- payment gateway snap -->
+           <script type="text/javascript">
+                                                        // For example trigger on button clicked, or any time you need
+                                                        var payButton = document.getElementById('pay-button{{$t->id}}');
+                                                        payButton.addEventListener('click', function () {
+                                                            // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
+                                                            window.snap.pay('{{$t->snapToken}}', {
+                                                            onSuccess: function(result){
+                                                                /* You may add your own implementation here */
+                                                                //alert("payment success!");
+                                                                window.location.href = '/invoice/{{$t->id}}'
+                                                                console.log(result);
+                                                            },
+                                                            onPending: function(result){
+                                                                /* You may add your own implementation here */
+                                                                alert("wating your payment!"); console.log(result);
+                                                            },
+                                                            onError: function(result){
+                                                                /* You may add your own implementation here */
+                                                                alert("payment failed!"); console.log(result);
+                                                            },
+                                                            onClose: function(){
+                                                                /* You may add your own implementation here */
+                                                                alert('you closed the popup without finishing the payment');
+                                                            }
+                                                            })
+                                                        });
+                                                        </script>
                                                     </td>
                                                 </tr>
                                             @endif
@@ -94,6 +120,13 @@
                             </div>
                         </div>
             @endforeach
+        @endforeach
+
+        @foreach($reservations as $r)
+            @foreach($r->transactions as $t)
+       
+         
+                                                             @endforeach
         @endforeach
 @endsection
 

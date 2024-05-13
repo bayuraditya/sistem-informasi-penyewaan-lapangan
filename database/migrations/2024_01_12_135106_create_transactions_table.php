@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('payment_status', ['authorize', 'capture', 'settlement','deny','pending','cancel','refund','partial_refund','chargeback','partial_chargeback','expire','failure'])->default('pending');
             $table->dateTime('transaction_time')->nullable();
             $table->dateTime('settlement_time')->nullable();
+            $table->string('snapToken')->nullable();
             $table->timestamps();
         });
     }
