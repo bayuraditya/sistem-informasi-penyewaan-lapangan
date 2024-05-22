@@ -3,20 +3,7 @@
 
 @section('content')
 <div class="m-5">
-
-    <a href="/" class="btn btn-primary">HOME</a> <br><br>
-
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Profile
-        </button>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/profile">{{$user->name}}</a></li>
-            <li><a class="dropdown-item" href="/profile/reservation-history">Reservation History</a></li>
-            <li><a class="dropdown-item" href="/profile/transaction-history">Transaction History</a></li>
-        </ul>
-        </div>
-    </div>
+    <h1>Riwayat Reservasi</h1>
     <div class="contaienr m-5">
         <table class="table">
             <thead>
@@ -132,3 +119,4 @@
 
 
 
+</div>

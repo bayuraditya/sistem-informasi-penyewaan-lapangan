@@ -82,6 +82,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/available-courts', [ReservationController::class, 'availableCourts']);
         Route::post('/book', [ReservationController::class, 'book'])->name('reservation.book');
         Route::post('/checkout', [ReservationController::class, 'store'])->name('reservation.checkout');
+        Route::put('/cancel/{id}', [CustomerController::class, 'cancel'])->name('reservation.cancel');
         Route::get('/invoice/{id}',[ReservationController::class, 'invoice']);
         Route::prefix('profile')->group(function(){
             Route::get('/', [CustomerController::class, 'edit'])->name('Customer.edit');

@@ -3,9 +3,14 @@
 
 @section('content')
 <div class="m-5">
-    <a href="/home" class="btn btn-primary">HOME</a> <br><br>
-    <h2>Data Transaksi</h2>
+    <h2>Riwayat Transaksi</h2>
     <br><br><br>
+    @if(session('success'))
+        <div class="alert-success alert  alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -35,9 +40,14 @@
                             Transaksi Dibatalkan
                         </p>
                     @elseif($tr->payment_status == 'pending')
-                        <p class="badge text-bg-warning">
+                        <p class="fw-bold text-warning">
                             Pending
                         </p>
+                        <form method="post" action="/cancel/{{$tr->id}}">
+                            @csrf
+                            @method('PUT')
+                            <button onclick="return confirm('Apakah anda yakin ingin membatalkan pesanan ini ?')" type="submit" class="btn btn-danger" >Batalkan Pesanan</button>
+                        </form>
                         <button type="submit" class="btn btn-primary" id="pay-button{{$tr->id}}">Selesaikan Pembayaran</button>
                                                        <!-- payment gateway snap -->
                                                         <script type="text/javascript">

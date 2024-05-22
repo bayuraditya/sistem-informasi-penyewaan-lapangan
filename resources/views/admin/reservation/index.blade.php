@@ -32,7 +32,6 @@
             <td> : </td>
             <td>{{$date}}</td>
         </tr>
-      
     </tbody>
 </table>
 <br>
@@ -46,12 +45,7 @@
 <br><br>
 @foreach($allCourt as $c)
     <h2>Lapangan : {{$c->court_name}}</h2>
-
-
-
-
-<!-- default: tanggal hari ini, lapangan A -->
-     <table class="table table-bordered">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <td>Sesi</td>

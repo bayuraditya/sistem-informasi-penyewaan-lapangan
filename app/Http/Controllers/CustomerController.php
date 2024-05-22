@@ -108,6 +108,30 @@ class CustomerController extends Controller
 
         return view('customer.profile.transaction-history',compact('transactions','user'));
     }
-    
+    public function cancel(Request $request,$id){
+        $user = Auth::user();
+        
+        $transaction = Transaction::findOrFail($id);
+        $transaction->payment_status = 'expire';
+        $transaction->save();
+
+        // $court = Court::findOrFail($id);
+        // $court->court_name = $request->court_name;
+        // $court->description = $request->description;
+        // $court->save();
+        // return redirect()->route('courts.index')
+        //                  ->with('success', 'Court updated successfully');
+        
+        $transactions = Transaction::with(['user','reservations'])
+        ->orderBy('created_at', 'desc') 
+        ->where('user_id', $user->id)
+        ->get();
+        return redirect()->route('transactionHistory')
+                        ->with('success', 'Pesanan Berhasil Dibatalkan')
+                        ->with('transactions',$transactions)
+                        ->with('user',$user);
+        // return view('customer.profile.transaction-history',compact('transactions','user'));
+       
+    }
        
 }
