@@ -14,6 +14,25 @@ use App\Models\User;
 
 class AdminController extends Controller
 {
+    public function updatePendingPayment(){
+        //reset pending ke exp yg tidak payment
+        $now = new DateTime();
+        $nowDate = $now->format('Y-m-d H:i:s');
+        $transactionCreated = Transaction::Where('transactions.payment_status', '=', 'pending')->pluck('created_at');
+        foreach($transactionCreated as $tr){
+            // $transaction = Transaction::where('created_at', $tr)->get();
+            $transactionId = Transaction::where('created_at', $tr)->value('id');
+            $expireTime = date('Y-m-d H:i:s', strtotime($tr . '+15 minutes'));
+            // echo $now . '<br>'. $expireTime . '<br>';
+            if($expireTime < $nowDate){
+                $transactionData = [
+                    'payment_status' => 'expire'
+                ];
+                $transaction = Transaction::find($transactionId);;
+                $transaction->update($transactionData);
+            }
+        }
+   }
    
     public function index(){
         // compact today dan court a
@@ -25,6 +44,8 @@ class AdminController extends Controller
     }
 
     public function reservation(Request $request){
+        $this->updatePendingPayment();
+
         // dd($request);
         $user = Auth::user();
         $reservations = Reservation::with('court', 'user', 'rentalSession', 'transactions')
@@ -94,6 +115,8 @@ class AdminController extends Controller
         return view('admin.profit',compact('totalProfit','startDate','endDate','filteredProfit','filteredTotalBookedSession','user'));
     }
     public function transaction(){
+        $this->updatePendingPayment();
+
         $now = new DateTime();
         $today = $now->format('Y-m-d');
         $transactions = Transaction::with(['user','reservations.court','reservations.rentalSession'])
@@ -104,6 +127,8 @@ class AdminController extends Controller
     }
 
     public function allUser(){
+        $this->updatePendingPayment();
+
         // $allUser = User::where('role', 'customer')->get();
         $user = Auth::user();
         $allUser = User::where('role', 'customer')
@@ -114,6 +139,8 @@ class AdminController extends Controller
     }
 
     public function userDetail($id){
+        $this->updatePendingPayment();
+
         $userDetail = User::findOrFail($id);
         $transactions = Transaction::with(['user','reservations.court','reservations.rentalSession'])
         ->orderBy('transaction_time', 'desc')

@@ -27,7 +27,7 @@ use Psy\Readline\Transient;
 
 class ReservationController extends Controller
 {
-    public function expire(){
+    public function updatePendingPayment(){
          //reset pending ke exp yg tidak payment
          $now = new DateTime();
          $nowDate = $now->format('Y-m-d H:i:s');
@@ -48,7 +48,6 @@ class ReservationController extends Controller
     }
     public function index()
     {
-        $this->expire();
         // date_default_timezone_set('Asia/Shanghai');
         $todayDateTime = new DateTime();
         $todayDate = $todayDateTime->format('Y-m-d');
@@ -57,24 +56,7 @@ class ReservationController extends Controller
     }
 
     public function availableCourts(Request $request){
-        //reset pending ke exp yg tidak payment
-        $now = new DateTime();
-        $nowDate = $now->format('Y-m-d H:i:s');
-        $transactionCreated = Transaction::Where('transactions.payment_status', '=', 'pending')->pluck('created_at');
-        foreach($transactionCreated as $tr){
-            // $transaction = Transaction::where('created_at', $tr)->get();
-            $transactionId = Transaction::where('created_at', $tr)->value('id');
-            $expireTime = date('Y-m-d H:i:s', strtotime($tr . '+15 minutes'));
-            // echo $now . '<br>'. $expireTime . '<br>';
-            if($expireTime < $nowDate){
-                $transactionData = [
-                    'payment_status' => 'expire'
-                ];
-                $transaction = Transaction::find($transactionId);;
-                $transaction->update($transactionData);
-            }
-        }
-        // 
+        $this->updatePendingPayment();
         date_default_timezone_set('Asia/Shanghai');
         $date = $request->input('date');
 
