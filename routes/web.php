@@ -52,11 +52,11 @@ Route::middleware(['auth'])->group(function () {
             });
             Route::prefix('reservation')->group(function(){
                 Route::get('/', [AdminController::class, 'reservation']);
-                Route::get('/available-courts', [ReservationController::class, 'available_courts']);
-                Route::post('/book', [ReservationController::class, 'book'])->name('reservation.book');
-                Route::post('/checkout', [ReservationController::class, 'store'])->name('reservation.checkout');
-                Route::post('/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
-                Route::get('/invoice/{id}',[ReservationController::class, 'invoice']);
+                Route::get('/select-date', [AdminController::class, 'selectDate']);
+                Route::get('/available-courts', [AdminController::class, 'availableCourts']);
+                Route::post('/book', [AdminController::class, 'book'])->name('reservation.book');
+                Route::post('/checkout', [AdminController::class, 'store'])->name('reservation.checkout');
+                Route::get('/invoice/{id}',[AdminController::class, 'invoice']);
                 
                 Route::get('/create', [ReservationController::class, 'create'])->name('reservation.create');
                 Route::post('/Manualstore', [ReservationController::class, 'Manualstore'])->name('reservation.store');
@@ -70,23 +70,19 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/', [AdminController::class, 'transaction']);
                 Route::post('/export', [ExportController::class, 'exportTransaction']);
             });
-            Route::get('/user/{id}', [AdminController::class, 'userDetail']);
+            Route::prefix('user')->group(function(){
+                Route::get('/', [AdminController::class, 'allUser']);
+                Route::get('/{id}', [AdminController::class, 'userDetail']);
+            });
         });
     });
 
     Route::middleware(['role:customer'])->group(function () {
         Route::get('/home', [ReservationController::class, 'index'])->name('home');
-        Route::get('/available-courts', [ReservationController::class, 'available_courts']);
+        Route::get('/available-courts', [ReservationController::class, 'availableCourts']);
         Route::post('/book', [ReservationController::class, 'book'])->name('reservation.book');
         Route::post('/checkout', [ReservationController::class, 'store'])->name('reservation.checkout');
-        Route::post('/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
         Route::get('/invoice/{id}',[ReservationController::class, 'invoice']);
-        // Route::prefix('profile')->group(function(){
-        //     Route::get('/',[CustomerController::class, 'index']);
-        //     Route::get('/update/{$id}', [CustomerController::class, 'update'])->name('customer-profile.update');
-        //     Route::get('/change-password',[CustomerController::class, 'changePassword']);
-        //     Route::get('/update-password',[CustomerController::class, 'updatePassword']);
-        // });
         Route::prefix('profile')->group(function(){
             Route::get('/', [CustomerController::class, 'edit'])->name('Customer.edit');
             Route::put('/update/{id}', [CustomerController::class, 'update'])->name('Customer.update');
@@ -94,7 +90,6 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/change-password/{id}', [CustomerController::class, 'changePassword'])->name('changePassword');
             Route::get('/reservation-history', [CustomerController::class, 'reservationHistory'])->name('reservationHistory');
             Route::get('/transaction-history', [CustomerController::class, 'transactionHistory'])->name('transactionHistory');
-            
         });
     });
 });

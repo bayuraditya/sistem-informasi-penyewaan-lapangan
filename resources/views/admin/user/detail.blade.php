@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin-app')
 @section('content')
 <div class="m-5">
     <h1>Detail User</h1>
@@ -7,17 +7,17 @@
         <tr>
             <td>Nama</td>
             <td> : </td>
-            <td>{{$user->name}}</td>
+            <td>{{$userDetail->name}}</td>
         </tr>
         <tr>
             <td>Email</td>
             <td> : </td>
-            <td> {{$user->email}} </td>
+            <td> {{$userDetail->email}} </td>
         </tr>
         <tr>
             <td>No HP</td>
             <td> : </td>
-            <td> {{$user->handphone_number}} </td>
+            <td> {{$userDetail->handphone_number}} </td>
         </tr>
     </table>
     riwayat Reservasi

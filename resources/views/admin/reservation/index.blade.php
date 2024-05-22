@@ -5,19 +5,12 @@
 <div class="m-5">
 
     <h1>Data Reservasi</h1>
-    <!-- 
-    tanggal (default nya today)
-    lapangan/court
-    tabel : tanggal, court, nama, sesi, payment status, 
-
-     -->
      <p>User : {{$user->name}}</p>
-     <a href="/admin" class="btn btn-primary">HOME</a> <br><br>
     <form id="logout-form" action="{{ route('logout') }}" method="POST">
     @csrf
         <button type="submit" class="btn btn-danger">{{ __('Logout') }}</button>
     </form> <br>
-    <a href="/admin/reservation/create" class="btn btn-primary">Tambah Reservasi</a> <br> <br>
+    <a href="/admin/reservation/select-date" class="btn btn-primary">Tambah Reservasi</a> <br> <br>
   <!-- tanggal dan court -->
      <form action="reservation" method="get">
         <label for="date">Pilih Tanggal</label>

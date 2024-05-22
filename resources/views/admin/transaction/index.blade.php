@@ -1,20 +1,16 @@
-
-@extends('layouts.app')
-@extends('layouts.checkout-app')
-
+@extends('layouts.admin-app')
 @section('content')
 <div class="m-5">
-    <a href="/admin" class="btn btn-primary">HOME</a> <br><br>
     <h2>Data Transaksi</h2>
     <br>
 
     <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportTransaction">
   Cetak
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exportTransaction" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -26,21 +22,18 @@
         @csrf
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Pilih Tanggal Awal</label>
-                <input type="date" name="start_date" id="">
+                <input type="date" name="start_date" id="" value="{{$today}}">
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Pilih Tanggal Awal</label>
-                <input type="date" name="end_date" id="">
+                <input type="date" name="end_date" id="" value="{{$today}}">
             </div>
-            
             <button type="submit" class="btn btn-primary">Cetak</button>
         </form>
       </div>
-      
     </div>
   </div>
 </div>
-
     <br><br>
     <table class="table table-bordered">
         <thead>

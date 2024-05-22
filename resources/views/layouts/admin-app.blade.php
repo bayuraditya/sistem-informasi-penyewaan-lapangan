@@ -9,7 +9,7 @@
   <body>
   <div class="m-5">
 
-<a href="/" class="btn btn-primary">HOME</a> <br><br>
+<a href="/admin" class="btn btn-primary">HOME</a> <br><br>
 
 <div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

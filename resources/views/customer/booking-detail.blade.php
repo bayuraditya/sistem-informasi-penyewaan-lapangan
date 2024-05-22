@@ -74,7 +74,10 @@
         <br>
 
         total bayar : Rp{{$totalPrice}}  <br>
-
+    <br><br>
+        <label for="note" class="form-label">Tambahkan Catatan (Optional)</label><br>
+        <input class="w-25" type="text" class="form-control" name="note">
+                     <br><br>  
         <input type="date" name="date" id=""value="{{$order['date']}}" class="d-none"  > <br>
        
         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">

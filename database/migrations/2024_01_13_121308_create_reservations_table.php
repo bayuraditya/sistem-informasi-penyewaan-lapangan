@@ -17,12 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('court_id');
             $table->unsignedBigInteger('rental_session_id');
             $table->date('date');
-            // $table->dateTime('end_time');
-            // $table->string('payment_status')->default('pending');
-            // $table->decimal('total_amount', 10, 2);
-
-
-            // Define foreign keys
+            $table->string('note')->nullable();
+         
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('court_id')->references('id')->on('courts')->onDelete('cascade');
             $table->foreign('rental_session_id')->references('id')->on('rental_sessions')->onDelete('NO ACTION');

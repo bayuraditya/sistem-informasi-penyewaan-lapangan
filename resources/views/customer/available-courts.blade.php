@@ -17,7 +17,7 @@
                     <input
                         @foreach($unavailableReservations as $ur)
                             @if($ur->rental_session_id == $re->id && $ur->court_id == $ac->id)
-                            disabled
+                                disabled
                             @endif
                         @endforeach
 

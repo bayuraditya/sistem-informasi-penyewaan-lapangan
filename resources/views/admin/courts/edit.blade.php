@@ -1,8 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.admin-app')
 @section('content')
 
 <div class="m-5">
-<a href="/admin" class="btn btn-primary">HOME</a> <br><br>
 
 @if(session('success'))
     <div class="alert-success alert  alert-dismissible fade show" role="alert">

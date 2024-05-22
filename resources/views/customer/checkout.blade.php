@@ -67,6 +67,7 @@
             @endforeach
         @endforeach
         <br>
+        <p>Catatan : {{$order->note}}</p> <br>
         <p>total bayar : Rp{{$totalPrice}}</p> <br>
         <button type="submit" class="btn btn-primary" id="pay-button">Selesaikan Pembayaran</button>
         

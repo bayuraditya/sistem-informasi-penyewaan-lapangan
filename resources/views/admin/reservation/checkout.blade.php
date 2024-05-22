@@ -66,18 +66,13 @@
                 @endforeach
             @endforeach
         @endforeach
-
         <br>
-
-        total bayar : Rp{{$totalPrice}}  <br>
-
-
-                <button type="submit" class="btn btn-primary" id="pay-button">Selesaikan Pembayaran</button>
+        <p>Catatan : Rp{{$totalPrice}}</p> <br>
+        <p>total bayar : Rp{{$totalPrice}}</p> <br>
+        <button type="submit" class="btn btn-primary" id="pay-button">Selesaikan Pembayaran</button>
         
   
 <!-- payment gateway snap -->
-
-
         <script type="text/javascript">
             // For example trigger on button clicked, or any time you need
             var payButton = document.getElementById('pay-button');

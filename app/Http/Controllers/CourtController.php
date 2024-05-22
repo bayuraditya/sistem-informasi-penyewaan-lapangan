@@ -3,16 +3,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Court;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class CourtController extends Controller
 {
     public function index(){
         $court = Court::all();
-        return view('admin.courts.index', compact(['court']));
+        $user = Auth::user();
+        return view('admin.courts.index', compact('user','court'));
     }
 
     public function create(){
-        return view('admin.courts.create');
+        $user = Auth::user();
+
+        return view('admin.courts.create',compact('user'));
     }
 
     public function store(Request $request){
@@ -33,7 +38,8 @@ class CourtController extends Controller
     public function edit($id){
         $allCourt = Court::all();
         $court = Court::find($id);
-        return view('admin.courts.edit', compact('court','allCourt'));
+        $user = Auth::user();
+        return view('admin.courts.edit', compact('court','allCourt','user'));
     }
 
  

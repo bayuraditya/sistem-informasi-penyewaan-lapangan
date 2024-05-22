@@ -1,8 +1,16 @@
-@extends('layouts.app')
-dashboard guest <br>
+@extends('layouts.guest-app')
+<div class="m-5">
 
-login 
-<a href="{{ route('login') }}" class="btn btn-primary">{{ __('Login') }}</a>
-                   <br>
-register
-<a href="{{ route('register') }}" class="btn btn-success">{{ __('Register') }}</a>
+    <h1>
+        Guest 
+
+    </h1>
+    <br>
+    
+    login 
+    <a href="{{ route('login') }}" class="btn btn-primary">{{ __('Login') }}</a>
+    <br>
+    register
+    <a href="{{ route('register') }}" class="btn btn-success">{{ __('Register') }}</a>
+    
+</div>

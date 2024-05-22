@@ -8,7 +8,7 @@
     {{$transaction->id}}
 <br>    {{$transaction->payment_status}}
 
-    <a href="../home" class="btn btn-primary">home</a>
+    <a href="/admin" class="btn btn-primary">home</a>
    </div>
 </div>
 @endsection
