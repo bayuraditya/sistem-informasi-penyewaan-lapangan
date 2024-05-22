@@ -32,11 +32,7 @@
             <td> : </td>
             <td>{{$date}}</td>
         </tr>
-        <tr>
-            <td>Lapangan</td>
-            <td> : </td>
-            <td>{{$court->court_name}}</td>
-        </tr>
+      
     </tbody>
 </table>
 <br>
@@ -48,6 +44,12 @@
             <button type="submit" class="btn btn-primary">Cetak</button>
         </form>
 <br><br>
+@foreach($allCourt as $c)
+    <h2>Lapangan : {{$c->court_name}}</h2>
+
+
+
+
 <!-- default: tanggal hari ini, lapangan A -->
      <table class="table table-bordered">
         <thead>
@@ -65,86 +67,85 @@
         </thead>
         <tbody>
             @foreach($rentalSession as $ren)
-           <tr>
-                <td>{{$ren->id}}</td>
-                <td>{{$ren->rental_session_time}}</td>
-                 <td>
-                    @foreach($reservations as $res)
-                    @if($res->rental_session_time == $ren->rental_session_time)
-                   {{$res->name}}
-                    @else
-                 
-                    @endif
-                    @endforeach
+                <tr>
+                    <td>{{$ren->id}}</td>
+                    <td>{{$ren->rental_session_time}}</td>
+                    <td>
+                        @foreach($reservations as $res)
+                            @if($res->rental_session_time == $ren->rental_session_time)
+                                @if($res->court_id == $c->id)
+                                    {{$res->name}}
+                                @endif
+                            @endif
+                        @endforeach
                     </td>
-                <td>
-                @foreach($reservations as $res)
-                    @if($res->rental_session_time == $ren->rental_session_time)
-                   {{$res->handphone_number}}
-                    @else
-                 
-                    @endif
-                    @endforeach
-                </td>
-                <td>
-                @foreach($reservations as $res)
-                    @if($res->rental_session_time == $ren->rental_session_time)
-                   {{$res->court_name}}
-                    @else
-                 
-                    @endif
-                    @endforeach
-                </td>
-                <td>
-                @foreach($reservations as $res)
-                    @if($res->rental_session_time == $ren->rental_session_time)
-                   {{$res->date}}
-                    @else
-                 
-                    @endif
-                    @endforeach
-                </td>
-                <td>
-                @foreach($reservations as $res)
-                    @if($res->rental_session_time == $ren->rental_session_time)
-                        @if($res->payment_status == 'settlement' || 'capture')
-                        <p>Lunas</p>
-                        @endif
-                    @else
-                 
-                    @endif
-                    @endforeach
-                </td>
-                <td>
-                @foreach($reservations as $res)
-                    @if($res->rental_session_time == $ren->rental_session_time)
-                        {{$res->payment_method}}
-                    @else
-                 
-                    @endif
-                    @endforeach
-                </td>
-                <td>
-                @foreach($reservations as $res)
-                    @if($res->rental_session_time == $ren->rental_session_time)
-                        <a href="/admin/reservation/{{$res->id}}" type="submit" class="btn btn-warning">Edit</a>
-                        <form action="{{ route('reservation.destroy', $res->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <input onclick="return confirm('Are you sure you want delete reservation {{$res->id}} ?')" type="submit" class="btn btn-danger" value="DELETE">
-                        </form>
-                    @else
-                 
-                    @endif
-                    @endforeach
-           
-        </td>
-                
-           </tr>
+                    <td>
+                        @foreach($reservations as $res)
+                            @if($res->rental_session_time == $ren->rental_session_time)
+                                @if($res->court_id == $c->id)
+                                    {{$res->handphone_number}}
+                                @endif
+                            @endif
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($reservations as $res)
+                            @if($res->rental_session_time == $ren->rental_session_time)
+                                @if($res->court_id == $c->id)
+                                    {{$res->court_name}}
+                                @endif
+                            @endif
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($reservations as $res)
+                            @if($res->rental_session_time == $ren->rental_session_time)
+                                @if($res->court_id == $c->id)
+                                    {{$res->date}}
+                                @endif
+                            @endif
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($reservations as $res)
+                            @if($res->rental_session_time == $ren->rental_session_time)
+                                @if($res->payment_status == 'settlement' || 'capture')
+                                    @if($res->court_id == $c->id)
+                                        <p>Lunas</p>
+                                    @endif
+                                @endif
+                            @endif
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($reservations as $res)
+                            @if($res->rental_session_time == $ren->rental_session_time)
+                                @if($res->court_id == $c->id)
+                                    {{$res->payment_method}}
+                                @endif
+                            @endif
+                        @endforeach
+                    </td>
+                    <td>
+                        @foreach($reservations as $res)
+                            @if($res->rental_session_time == $ren->rental_session_time)
+                                @if($res->court_id == $c->id)
+                                    <a href="/admin/reservation/{{$res->id}}" type="submit" class="btn btn-warning">Edit</a>
+                                    <form action="{{ route('reservation.destroy', $res->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input onclick="return confirm('Are you sure you want delete reservation {{$res->id}} ?')" type="submit" class="btn btn-danger" value="DELETE">
+                                    </form>
+                                @endif
+                            @endif
+                        @endforeach
+                    </td>
+                </tr>
            @endforeach
-
         </tbody>
     </table>
+@endforeach
+
 </div>
 
 <div class="modal" tabindex="-1">

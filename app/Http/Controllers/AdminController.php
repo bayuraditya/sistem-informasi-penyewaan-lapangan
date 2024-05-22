@@ -35,7 +35,7 @@ class AdminController extends Controller
         ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
         ->where('transactions.payment_status', 'settlement') 
         ->where('reservations.date', $request->date) 
-        ->where('reservations.court_id', $request->court_id) 
+        // ->where('reservations.court_id', $request->court_id) 
         ->orWhere('transactions.payment_status', 'capture')
         ->select('reservations.*', 'courts.*', 'users.*', 'rental_sessions.*', 'transactions.*')
         ->get();
