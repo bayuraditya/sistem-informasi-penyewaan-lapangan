@@ -12,7 +12,6 @@
      <form action="reservation" method="get">
         <label for="date">Pilih Tanggal</label>
         <input type="date" name="date" id="" value="{{$today}}"> <br>
-      
         <input type="submit" value="Submit" class="btn btn-primary">
      </form>
 

@@ -93,6 +93,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/checkout', [ReservationController::class, 'store'])->name('reservation.checkout');
         Route::put('/cancel/{id}', [CustomerController::class, 'cancel'])->name('reservation.cancel');
         Route::get('/invoice/{id}',[ReservationController::class, 'invoice']);
+        Route::get('/error?order_id={id}', [ReservationController::class, 'error']);
+
         Route::prefix('profile')->group(function(){
             Route::get('/', [CustomerController::class, 'edit'])->name('Customer.edit');
             Route::put('/update/{id}', [CustomerController::class, 'update'])->name('Customer.update');

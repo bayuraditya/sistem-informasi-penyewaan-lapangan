@@ -317,9 +317,8 @@ class ReservationController extends Controller
         return response()->json($status);
     }
   
-    public function error(Request $request){
-        $status = 'error';
-        return response()->json($status);
+    public function error(Request $request,$id){
+        echo $id;
     }
   
     // 

@@ -46,26 +46,6 @@ class ExportController extends Controller
     }
 
     public function exportReservation(Request $request){
-        // dd($request);
-        // $today = new DateTime();
-        // $today = $today->format('Y-m-d');
-        // $startDate = $request->start_date;
-        // $endDate = $request->end_date;
-        // $queryEndDate = $endDate . "T23:59" ;
-
-        // if($startDate == null){
-        //     // 
-        //     $startDate ="0" ;
-        // }
-        
-        // if($endDate == null){
-        //     $queryDate = $today . "T23:59";
-        //     $endDate = $today;
-        // }
-
-     
-    
-        
         $user = Auth::user();
         $reservations = Reservation::with('court', 'user', 'rentalSession', 'transactions')
         ->join('courts', 'reservations.court_id', '=', 'courts.id')
@@ -75,7 +55,7 @@ class ExportController extends Controller
         ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
         ->where('transactions.payment_status', 'settlement') 
         ->where('reservations.date', $request->date) 
-        ->where('reservations.court_id', $request->court_id) 
+        // ->where('reservations.court_id', $request->court_id) 
         ->orWhere('transactions.payment_status', 'capture')
         ->select('reservations.*', 'courts.*', 'users.*', 'rental_sessions.*', 'transactions.*')
         ->get();
@@ -85,7 +65,8 @@ class ExportController extends Controller
         $court = Court::orderBy('id', 'asc')->first();
         $allCourt = Court::all();
         $rentalSession = RentalSession::all();
-
+        // return view('admin.reservation.index',compact('today','court','allCourt','reservations','rentalSession','date','user'));
+   
         $pdf = PDF::loadview('admin.reservation.export',compact('today','court','allCourt','reservations','rentalSession','date','user'));
     	return $pdf->download();
 

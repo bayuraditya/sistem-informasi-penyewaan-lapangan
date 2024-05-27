@@ -3,7 +3,6 @@
 <div class="m-5">
     <form id="logout-form" action="{{ route('logout') }}" method="POST">
         @csrf
-        <button type="submit" class="btn btn-danger">{{ __('Logout') }}</button>
     </form>
 <br><br><br>
     <form method="GET" action="/available-courts">
