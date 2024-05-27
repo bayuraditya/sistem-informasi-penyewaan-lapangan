@@ -213,9 +213,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($transactions as $tr)
-                @if($tr->payment_status == 'settlement' || $tr->payment_status == 'capture' )
-                <tr>
+            @foreach($transactions as $tr)
+            @if($tr->payment_status == 'settlement' || $tr->payment_status == 'capture' )
+            <tr>
                     <td>{{$tr->id}}</td>
                     <td>Rp{{$tr->total_amount}}</td>
                     <td>{{$tr->payment_method}}</td>

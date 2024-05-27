@@ -1,5 +1,5 @@
 
-@extends('layouts.app')
+@extends('layouts.export-app')
 
 @section('content')
 <div class="m-5">

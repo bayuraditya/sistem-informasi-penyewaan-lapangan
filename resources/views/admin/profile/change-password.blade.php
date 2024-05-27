@@ -24,7 +24,7 @@
                             </div>
                         @endif
                         
-                        <form method="POST" action="/profile/change-password/{{$user->id}}">
+                        <form method="POST" action="admin/profile/change-password/{{$user->id}}">
                             @csrf
                             @method('PUT')
 

@@ -8,6 +8,7 @@ use App\Models\RentalSession;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\Reservation;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
@@ -38,8 +39,8 @@ class ExportController extends Controller
             $query->whereBetween('created_at', [$startDate, $queryEndDate]);
         })
         ->get();
-        
-        $pdf = PDF::loadview('admin.transaction.export',compact('transactions','startDate','endDate'));
+        $user = Auth::user();
+        $pdf = PDF::loadview('admin.transaction.export',compact('transactions','startDate','endDate','user'));
     	return $pdf->download();
 
     }

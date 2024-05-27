@@ -6,21 +6,13 @@
 
     <h1>Data Reservasi</h1>
      <p>User : {{$user->name}}</p>
-    <form id="logout-form" action="{{ route('logout') }}" method="POST">
-    @csrf
-        <button type="submit" class="btn btn-danger">{{ __('Logout') }}</button>
-    </form> <br>
+   
     <a href="/admin/reservation/select-date" class="btn btn-primary">Tambah Reservasi</a> <br> <br>
   <!-- tanggal dan court -->
      <form action="reservation" method="get">
         <label for="date">Pilih Tanggal</label>
-        <input type="date" name="date" id=""> <br>
-        <label for="court">Pilih Lapangan</label>
-        <select name="court_id" id="" >
-            @foreach($allCourt as $c)
-            <option value="{{$c->id}}">{{$c->court_name}}</option>
-            @endforeach
-        </select><br>
+        <input type="date" name="date" id="" value="{{$today}}"> <br>
+      
         <input type="submit" value="Submit" class="btn btn-primary">
      </form>
 
@@ -60,8 +52,9 @@
             </tr>
         </thead>
         <tbody>
+           
             @foreach($rentalSession as $ren)
-                <tr>
+            <tr>
                     <td>{{$ren->id}}</td>
                     <td>{{$ren->rental_session_time}}</td>
                     <td>
@@ -95,17 +88,17 @@
                         @foreach($reservations as $res)
                             @if($res->rental_session_time == $ren->rental_session_time)
                                 @if($res->court_id == $c->id)
-                                    {{$res->date}}
+                                {{$res->date}}
                                 @endif
-                            @endif
-                        @endforeach
-                    </td>
-                    <td>
-                        @foreach($reservations as $res)
-                            @if($res->rental_session_time == $ren->rental_session_time)
+                                @endif
+                                @endforeach
+                            </td>
+                            <td>
+                                @foreach($reservations as $res)
+                                @if($res->rental_session_time == $ren->rental_session_time)
                                 @if($res->payment_status == 'settlement' || 'capture')
-                                    @if($res->court_id == $c->id)
-                                        <p>Lunas</p>
+                                @if($res->court_id == $c->id)
+                                <p>Lunas</p>
                                     @endif
                                 @endif
                             @endif
@@ -130,10 +123,10 @@
                                         @method('DELETE')
                                         <input onclick="return confirm('Are you sure you want delete reservation {{$res->id}} ?')" type="submit" class="btn btn-danger" value="DELETE">
                                     </form>
-                                @endif
-                            @endif
-                        @endforeach
-                    </td>
+                                    @endif
+                                    @endif
+                                    @endforeach
+                                </td>
                 </tr>
            @endforeach
         </tbody>

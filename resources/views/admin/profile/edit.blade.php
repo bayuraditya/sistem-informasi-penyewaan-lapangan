@@ -2,7 +2,6 @@
 @section('content')
 
 <div class="m-5">
-<a href="/" class="btn btn-primary">HOME</a> <br><br>
 
 @if(session('success'))
     <div class="alert-success alert  alert-dismissible fade show" role="alert">
@@ -11,7 +10,7 @@
     </div>
 @endif
 
-  <form action="/profile/update/{{$user->id}}" method="post">
+  <form action="/admin/profile/update/{{$user->id}}" method="post">
     @csrf
     @method('PUT')
     <h1>Edit Profile</h1>
@@ -30,7 +29,7 @@
   <button type="submit" class="btn btn-success">Simpan Perubahan</button>
 </form>
 <br><br>  
-<a href="/profile/change-password/">Ubah Kata Sandi</a>
+<a href="/admin/profile/change-password/">Ubah Kata Sandi</a>
 
 
 </div>

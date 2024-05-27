@@ -57,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/book', [AdminController::class, 'book'])->name('reservation.book');
                 Route::post('/checkout', [AdminController::class, 'store'])->name('reservation.checkout');
                 Route::get('/invoice/{id}',[AdminController::class, 'invoice']);
+                Route::post('/export', [ExportController::class, 'exportReservation']);
                 
                 Route::get('/create', [ReservationController::class, 'create'])->name('reservation.create');
                 Route::post('/Manualstore', [ReservationController::class, 'Manualstore'])->name('reservation.store');
@@ -73,6 +74,14 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('user')->group(function(){
                 Route::get('/', [AdminController::class, 'allUser']);
                 Route::get('/{id}', [AdminController::class, 'userDetail']);
+            });
+            Route::prefix('profile')->group(function(){
+                Route::get('/', [AdminController::class, 'edit'])->name('admin.edit');
+                Route::put('/update/{id}', [AdminController::class, 'update'])->name('admin.update');
+                Route::get('/change-password', [AdminController::class, 'showChangePasswordForm'])->name('adminShowChangePasswordForm');
+                Route::put('/change-password/{id}', [AdminController::class, 'changePassword'])->name('changePassword');
+                Route::get('/reservation-history', [AdminController::class, 'reservationHistory'])->name('reservationHistory');
+                Route::get('/transaction-history', [AdminController::class, 'transactionHistory'])->name('transactionHistory');
             });
         });
     });

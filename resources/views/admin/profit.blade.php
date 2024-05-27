@@ -3,7 +3,6 @@
 
 @section('content')
 <div class="m-5">
-    <a href="/admin" class="btn btn-primary">HOME</a> <br><br>
     <h2>Keuntungan Total : Rp{{$totalProfit}}</h2>
 <br>
     <h3>Cari Data Keuntungan</h3>

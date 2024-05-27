@@ -3,7 +3,6 @@
 @section('content')
 <br><br>
     <div class="container">
-    <a href="/home" class="btn btn-primary">HOME</a> <br><br>
 
         <div class="row justify-content-center">
             <div class="col-md-8">
