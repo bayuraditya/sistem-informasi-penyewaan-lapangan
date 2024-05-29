@@ -12,7 +12,7 @@ use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
-
+use DateInterval;
 use function Ramsey\Uuid\v1;
 
 class CustomerController extends Controller
@@ -128,7 +128,20 @@ class CustomerController extends Controller
         ->orderBy('created_at', 'desc') 
         ->where('user_id', $user->id)
         ->get();
+        /*
+        ambil created at
+        expire = created at +15 menit
+        ambil now
+        count down = expire - now
 
+        */
+        //
+        // $c = $transactions[0]['created_at'];
+        // $e=$c->add(new DateInterval('PT15M')); 
+        // // dd($transactions[0]['created_at']);
+        // dd($e);
+        $todayDateTime = new DateTime();
+        $now = $todayDateTime->format('Y-m-d H:i:s');
         return view('customer.profile.transaction-history',compact('transactions','user'));
     }
     public function cancel(Request $request,$id){
@@ -150,7 +163,7 @@ class CustomerController extends Controller
         ->where('user_id', $user->id)
         ->get();
         return redirect()->route('transactionHistory')
-                        ->with('success', 'Pesanan Berhasil Dibatalkan')
+                        ->with('success', 'Pesanan Dibatalkan')
                         ->with('transactions',$transactions)
                         ->with('user',$user);
         // return view('customer.profile.transaction-history',compact('transactions','user'));

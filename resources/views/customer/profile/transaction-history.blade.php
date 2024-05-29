@@ -1,4 +1,3 @@
-
 @extends('layouts.checkout-app')
 
 @section('content')
@@ -6,7 +5,7 @@
     <h2>Riwayat Transaksi</h2>
     <br><br><br>
     @if(session('success'))
-        <div class="alert-success alert  alert-dismissible fade show" role="alert">
+        <div class="alert-danger alert  alert-dismissible fade show" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -50,21 +49,29 @@
                         <td>{{$tr->payment_method}}</td>
                         <td>
                             @if($tr->payment_status == 'settlement' || $tr->payment_status == 'capture')
-                                <p class="text-success fw-bold">
+                                <p id="paymentStatus_{{$tr->id}}" class="text-success fw-bold">
                                     Lunas
                                 </p>
                             @elseif($tr->payment_status == 'expire')
-                                <p class="text-danger fw-bold">
+                                <p id="paymentStatus_{{$tr->id}}" class="text-danger fw-bold">
                                     Transaksi Dibatalkan
                                 </p>
                             @elseif($tr->payment_status == 'pending')
-                                <p class="fw-bold text-warning">
+                                <p id="paymentStatus_{{$tr->id}}" class="fw-bold text-warning">
                                     Pending
                                 </p>
+                                <p id="countdown"></p>     
+
                                 <form method="post" action="/cancel/{{$tr->id}}">
                                     @csrf
                                     @method('PUT')
                                     <button onclick="return confirm('Apakah anda yakin ingin membatalkan pesanan ini ?')" type="submit" class="btn btn-danger" >Batalkan Pesanan</button>
+                                </form>
+                                <form class="d-none" id="cancel_{{$tr->id}}" method="post" action="/cancel/{{$tr->id}}">
+                                    @csrf
+                                    @method('PUT')
+                                    <button onsubmit="return alert('Pesanan anda dibatalkan karena waktu bayar kadaluarsa')" type="submit" class="btn btn-danger" >Batalkan Pesanan</button>
+
                                 </form>
                                 <button type="submit" class="btn btn-primary" id="pay-button{{$tr->id}}">Selesaikan Pembayaran</button>
                                                             <!-- payment gateway snap -->
@@ -96,10 +103,58 @@
                                                                 });
                                                                 </script>
                             @else
-                                <p class="badge text-bg-seccondary">
+                                <p id="paymentStatus_{{$tr->id}}" class="badge text-bg-seccondary">
                                     {{$tr->payment_status}}
                                 </p>
                             @endif    
+                            
+                            <p class="d-none" id="created_at">{{$tr->created_at}}</p>
+                            <p class="d-none" id="payment_status">{{$tr->payment_status}}</p>
+                                
+                            <script>
+
+                                    var createdAt = document.getElementById('created_at').innerHTML;
+                                    var endTimeString = createdAt;
+                                    var endTimeDate = new Date(endTimeString);
+                                    var gmt8 = { timeZone: 'Asia/Singapore', hour12: false };
+                                    var endTimeStringFormatted = endTimeDate.toLocaleString('en-US', gmt8);
+                                    var endTime = new Date(endTimeStringFormatted);
+                                    endTime.setTime(endTime.getTime() + 15 * 60 * 1000);
+
+                                    function updateCountdown() {
+                                        // Mendapatkan waktu saat ini
+                                        var currentTime = new Date(); // Mendapatkan waktu saat ini dalam milidetik
+                                        
+                                        // Menghitung waktu tersisa
+                                        var timeRemaining = endTime - currentTime;
+                                        // Memeriksa apakah waktu telah habis
+                                        if (timeRemaining <= 0) {
+                                            // alert('Pesanan anda dibatalkan karena waktu bayar kadaluarsa');
+                                            clearInterval(countdownInterval);
+                                            
+                                            document.getElementById('cancel_{{$tr->id}}').submit();
+                                        } else {
+                                            // Menghitung jam, menit, dan detik yang tersisa
+                                            var hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
+                                            var minutes = Math.floor((timeRemaining / (1000 * 60)) % 60);
+                                            var seconds = Math.floor((timeRemaining / 1000) % 60);
+                                                
+                                            // Menampilkan hitung mundur
+                                            document.getElementById('countdown').innerText = "Sisa waktu: " + hours + " jam " + minutes + " menit " + seconds + " detik";
+                                            // document.getElementById('current').innerText = currentTime;
+                                            // document.getElementById('end').innerText = endTime;
+                                            // document.getElementById('createdAt').innerText = createdAt;
+                                            // document.getElementById('remaining').innerText = timeRemaining;
+                                            }
+                                    }
+
+                                    // Memperbarui hitung mundur setiap detik
+                                    var countdownInterval = setInterval(updateCountdown, 1000);
+                                    
+                                    // Menjalankan updateCountdown pertama kali agar tampilan hitung mundur muncul segera
+                                    updateCountdown();
+                                </script>
+                            
                         </td>
                         <td>{{$tr->transaction_time}}</td>
                         <td>{{$tr->settlement_time}}</td>
