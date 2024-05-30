@@ -150,7 +150,7 @@ class CustomerController extends Controller
         $transaction = Transaction::findOrFail($id);
         $transaction->payment_status = 'expire';
         $transaction->save();
-
+        // dd($transaction);
         // $court = Court::findOrFail($id);
         // $court->court_name = $request->court_name;
         // $court->description = $request->description;
@@ -167,6 +167,8 @@ class CustomerController extends Controller
                         ->with('transactions',$transactions)
                         ->with('user',$user);
         // return view('customer.profile.transaction-history',compact('transactions','user'));
+
+        // return view('customer.home',compact('transactions','user'));
        
     }
        

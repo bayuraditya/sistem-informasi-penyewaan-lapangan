@@ -28,6 +28,7 @@
     </ul>
 
     <div class="tab-content" id="pills-tabContent">
+        <!-- tab all -->
         <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="pills-home-tab">
             <table class="table table-striped">
                 <thead>
@@ -49,112 +50,139 @@
                         <td>{{$tr->payment_method}}</td>
                         <td>
                             @if($tr->payment_status == 'settlement' || $tr->payment_status == 'capture')
-                                <p id="paymentStatus_{{$tr->id}}" class="text-success fw-bold">
+                                <p class="text-success fw-bold">
                                     Lunas
                                 </p>
                             @elseif($tr->payment_status == 'expire')
-                                <p id="paymentStatus_{{$tr->id}}" class="text-danger fw-bold">
+                                <p class="text-danger fw-bold">
                                     Transaksi Dibatalkan
                                 </p>
                             @elseif($tr->payment_status == 'pending')
-                                <p id="paymentStatus_{{$tr->id}}" class="fw-bold text-warning">
+                                <p id="paymentStatusPending_{{$tr->id}}" class="fw-bold text-warning">
                                     Pending
                                 </p>
-                                <p id="countdown"></p>     
-
-                                <form method="post" action="/cancel/{{$tr->id}}">
+                                <p id="countdown_{{$tr->id}}"></p>
+                                created at     
+                                <p id="createdAt_{{$tr->id}}">{{$tr->created_at}}</p>     
+                                <p id="expireTime_{{$tr->id}}"></p>     
+                                <form id="formCancel_{{$tr->id}}" method="post" action="/cancel/{{$tr->id}}">
                                     @csrf
                                     @method('PUT')
                                     <button onclick="return confirm('Apakah anda yakin ingin membatalkan pesanan ini ?')" type="submit" class="btn btn-danger" >Batalkan Pesanan</button>
                                 </form>
-                                <form class="d-none" id="cancel_{{$tr->id}}" method="post" action="/cancel/{{$tr->id}}">
-                                    @csrf
-                                    @method('PUT')
-                                    <button onsubmit="return alert('Pesanan anda dibatalkan karena waktu bayar kadaluarsa')" type="submit" class="btn btn-danger" >Batalkan Pesanan</button>
-
-                                </form>
                                 <button type="submit" class="btn btn-primary" id="pay-button{{$tr->id}}">Selesaikan Pembayaran</button>
                                                             <!-- payment gateway snap -->
-                                                                <script type="text/javascript">
-                                                                // For example trigger on button clicked, or any time you need
-                                                                var payButton = document.getElementById('pay-button{{$tr->id}}');
-                                                                payButton.addEventListener('click', function () {
-                                                                    // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
-                                                                    window.snap.pay('{{$tr->snapToken}}', {
-                                                                    onSuccess: function(result){
-                                                                        /* You may add your own implementation here */
-                                                                        //alert("payment success!");
-                                                                        window.location.href = ''
-                                                                        console.log(result);
-                                                                    },
-                                                                    onPending: function(result){
-                                                                        /* You may add your own implementation here */
-                                                                        alert("wating your payment!"); console.log(result);
-                                                                    },
-                                                                    onError: function(result){
-                                                                        /* You may add your own implementation here */
-                                                                        alert("payment failed!"); console.log(result);
-                                                                    },
-                                                                    onClose: function(){
-                                                                        /* You may add your own implementation here */
-                                                                        alert('you closed the popup without finishing the payment');
-                                                                    }
-                                                                    })
-                                                                });
-                                                                </script>
+                                <script type="text/javascript">
+                                    // For example trigger on button clicked, or any time you need
+                                    var payButtons = document.querySelectorAll('#pay-button{{$tr->id}}');
+                                    payButtons.forEach(function(payButton) { 
+                                        payButton.addEventListener('click', function () {
+                                        // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
+                                            window.snap.pay('{{$tr->snapToken}}', {
+                                                onSuccess: function(result){
+                                                    /* You may add your own implementation here */
+                                                    //alert("payment success!");
+                                                    window.location.href = ''
+                                                    console.log(result);
+                                                },
+                                                onPending: function(result){
+                                                    /* You may add your own implementation here */
+                                                    alert("wating your payment!"); console.log(result);
+                                                },
+                                                onError: function(result){
+                                                    /* You may add your own implementation here */
+                                                    alert("payment failed!"); console.log(result);
+                                                },
+                                                onClose: function(){
+                                                    /* You may add your own implementation here */
+                                                    alert('you closed the popup without finishing the payment');
+                                                }
+                                            })
+                                        });
+                                    });
+                                   
+                            </script>
                             @else
-                                <p id="paymentStatus_{{$tr->id}}" class="badge text-bg-seccondary">
+                                <p class="badge text-bg-seccondary">
                                     {{$tr->payment_status}}
                                 </p>
                             @endif    
-                            
-                            <p class="d-none" id="created_at">{{$tr->created_at}}</p>
-                            <p class="d-none" id="payment_status">{{$tr->payment_status}}</p>
-                                
+                            <!-- untuk countdown expire otomatis -->
+                            <form class="d-none" id="cancel_{{$tr->id}}" method="post" action="/cancel/{{$tr->id}}">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-danger" >Batalkan Pesanan</button>
+                            </form>
+                            <p class="d-none" id="created_at_{{$tr->id}}">{{$tr->created_at}}</p>
+
+
                             <script>
+                                
+                       
 
-                                    var createdAt = document.getElementById('created_at').innerHTML;
-                                    var endTimeString = createdAt;
-                                    var endTimeDate = new Date(endTimeString);
-                                    var gmt8 = { timeZone: 'Asia/Singapore', hour12: false };
-                                    var endTimeStringFormatted = endTimeDate.toLocaleString('en-US', gmt8);
-                                    var endTime = new Date(endTimeStringFormatted);
-                                    endTime.setTime(endTime.getTime() + 15 * 60 * 1000);
 
-                                    function updateCountdown() {
-                                        // Mendapatkan waktu saat ini
-                                        var currentTime = new Date(); // Mendapatkan waktu saat ini dalam milidetik
-                                        
-                                        // Menghitung waktu tersisa
-                                        var timeRemaining = endTime - currentTime;
-                                        // Memeriksa apakah waktu telah habis
-                                        if (timeRemaining <= 0) {
-                                            // alert('Pesanan anda dibatalkan karena waktu bayar kadaluarsa');
-                                            clearInterval(countdownInterval);
+                                var createdAt{{$tr->id}} = document.getElementById('created_at_{{$tr->id}}').innerHTML;
+                                var endTimeString{{$tr->id}} = createdAt{{$tr->id}};
+                                var endTimeDate{{$tr->id}} = new Date(endTimeString{{$tr->id}});
+                                var gmt8 = { timeZone: 'Asia/Singapore', hour12: false };
+                                var endTimeStringFormatted{{$tr->id}} = endTimeDate{{$tr->id}}.toLocaleString('en-US', gmt8);
+                                var endTime{{$tr->id}} = new Date(endTimeStringFormatted{{$tr->id}});
+                                endTime{{$tr->id}}.setTime(endTime{{$tr->id}}.getTime() + 15 * 60 * 1000);
+
+                                document.getElementById('createdAt_{{$tr->id}}').innerHTML = createdAt{{$tr->id}}
+                                document.getElementById('expireTime_{{$tr->id}}').innerHTML = createdAt{{$tr->id}}
+                                                  // Set the date we're counting down to
+                                var countdownDate{{$tr->id}} = endTime{{$tr->id}};
+                                        // Update the countdown every 1 second
+                                     var x = setInterval(function() {
+                                            // Get today's date and time
+                                            var now = new Date().getTime();
+
+                                            // Find the distance between now and the countdown date
+                                            var distance{{$tr->id}} = countdownDate{{$tr->id}} - now;
+
+                                            // Time calculations for days, hours, minutes, and seconds
+                                            var hours = Math.floor((distance{{$tr->id}} % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                            var minutes = Math.floor((distance{{$tr->id}} % (1000 * 60 * 60)) / (1000 * 60));
+                                            var seconds = Math.floor((distance{{$tr->id}} % (1000 * 60)) / 1000);
+
+                                            // Display the result in the element with id="countdown"
+                                            var countdowns = document.querySelectorAll("#countdown_{{$tr->id}}");
+                                            countdowns.forEach(function(countdown){
+                                                countdown.innerHTML = ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
+                                            });
+
                                             
-                                            document.getElementById('cancel_{{$tr->id}}').submit();
-                                        } else {
-                                            // Menghitung jam, menit, dan detik yang tersisa
-                                            var hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
-                                            var minutes = Math.floor((timeRemaining / (1000 * 60)) % 60);
-                                            var seconds = Math.floor((timeRemaining / 1000) % 60);
-                                                
-                                            // Menampilkan hitung mundur
-                                            document.getElementById('countdown').innerText = "Sisa waktu: " + hours + " jam " + minutes + " menit " + seconds + " detik";
-                                            // document.getElementById('current').innerText = currentTime;
-                                            // document.getElementById('end').innerText = endTime;
-                                            // document.getElementById('createdAt').innerText = createdAt;
-                                            // document.getElementById('remaining').innerText = timeRemaining;
-                                            }
-                                    }
 
-                                    // Memperbarui hitung mundur setiap detik
-                                    var countdownInterval = setInterval(updateCountdown, 1000);
-                                    
-                                    // Menjalankan updateCountdown pertama kali agar tampilan hitung mundur muncul segera
-                                    updateCountdown();
-                                </script>
-                            
+
+
+
+                                            // If the countdown is over, write some text 
+                                            if (distance{{$tr->id}} < 0) {
+                                                
+                                                var formsCancel_{{$tr->id}} = document.querySelectorAll('#formCancel_{{$tr->id}}');
+                                                formsCancel_{{$tr->id}}.forEach(function(f){
+                                                    f.classList.add('d-none');
+                                                });
+    
+                                                // var pay-buttons{{$tr->id}} = document.querySelectorAll('#pay-button{{$tr->id}}');
+                                                // pay-buttons{{$tr->id}}.forEach(function(pbtn){
+                                                //     pbtn.classList.add('d-none');
+                                                // });
+                                                
+                                                var paymentStatusPending_{{$tr->id}} = document.querySelectorAll("#paymentStatusPending_{{$tr->id}}");
+                                                paymentStatusPending_{{$tr->id}}.forEach(function(p){
+                                                    p.innerHTML = 'Transaksi Dibatalkan';
+                                                    p.classList.add('text-danger');
+                                                    p.classList.remove('text-warning');
+                                                    
+                                                    clearInterval(x);
+                                                });
+
+                                                
+                                            }
+                                        }, 1000);
+                            </script>
                         </td>
                         <td>{{$tr->transaction_time}}</td>
                         <td>{{$tr->settlement_time}}</td>
@@ -168,6 +196,7 @@
                 </tbody>
             </table>
         </div>
+        <!-- tab pending -->
         <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pills-profile-tab">
             <table class="table table-striped">
                 <thead>
@@ -190,70 +219,60 @@
                         <td>{{$tr->payment_method}}</td>
                         <td>
                             @if($tr->payment_status == 'settlement' || $tr->payment_status == 'capture')
-                            <p class="text-success fw-bold">
+                                <p class="text-success fw-bold">
                                     Lunas
                                 </p>
                             @elseif($tr->payment_status == 'expire')
-                            <p class="text-danger fw-bold">
-                                Transaksi Dibatalkan
-                            </p>
+                                <p class="text-danger fw-bold">
+                                    Transaksi Dibatalkan
+                                </p>
                             @elseif($tr->payment_status == 'pending')
-                                <p class="fw-bold text-warning">
+                                <p id="paymentStatusPending_{{$tr->id}}" class="fw-bold text-warning">
                                     Pending
                                 </p>
-                                <form method="post" action="/cancel/{{$tr->id}}">
+                                <p id="countdown_{{$tr->id}}"></p>
+                                created at     
+                                <p id="createdAt_{{$tr->id}}">{{$tr->created_at}}</p>     
+                                <p id="expireTime_{{$tr->id}}"></p>     
+                                <form id="formCancel_{{$tr->id}}" method="post" action="/cancel/{{$tr->id}}">
                                     @csrf
                                     @method('PUT')
                                     <button onclick="return confirm('Apakah anda yakin ingin membatalkan pesanan ini ?')" type="submit" class="btn btn-danger" >Batalkan Pesanan</button>
                                 </form>
                                 <button type="submit" class="btn btn-primary" id="pay-button{{$tr->id}}">Selesaikan Pembayaran</button>
                                                             <!-- payment gateway snap -->
-                                                            <script type="text/javascript">
-                                                                // For example trigger on button clicked, or any time you need
-                                                                var payButton = document.getElementById('pay-button{{$tr->id}}');
-                                                                payButton.addEventListener('click', function () {
-                                                                    // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
-                                                                    window.snap.pay('{{$tr->snapToken}}', {
-                                                                    onSuccess: function(result){
-                                                                        /* You may add your own implementation here */
-                                                                        //alert("payment success!");
-                                                                        window.location.href = ''
-                                                                        console.log(result);
-                                                                    },
-                                                                    onPending: function(result){
-                                                                        /* You may add your own implementation here */
-                                                                        alert("wating your payment!"); console.log(result);
-                                                                    },
-                                                                    onError: function(result){
-                                                                        /* You may add your own implementation here */
-                                                                        alert("payment failed!"); console.log(result);
-                                                                    },
-                                                                    onClose: function(){
-                                                                        /* You may add your own implementation here */
-                                                                        alert('you closed the popup without finishing the payment');
-                                                                    }
-                                                                    })
-                                                                });
-                                                                </script>
+                                                            
+                               
                             @else
                                 <p class="badge text-bg-seccondary">
                                     {{$tr->payment_status}}
                                 </p>
-                                @endif    
-                            </td>
-                            <td>{{$tr->transaction_time}}</td>
-                            <td>{{$tr->settlement_time}}</td>
-                            <td>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#orderDetailModal_{{$tr->id}}">
-                                    Detail Reservasi
-                                </button>
-                            </td>
-                        </tr>
-                        @endif
-                        @endforeach
-                    </tbody>
+                            @endif    
+                            <!-- untuk countdown expire otomatis -->
+                            <form class="d-none" id="cancel_{{$tr->id}}" method="post" action="/cancel/{{$tr->id}}">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-danger" >Batalkan Pesanan</button>
+                            </form>
+                            <p class="d-none" id="created_at_{{$tr->id}}">{{$tr->created_at}}</p>
+
+
+                           
+                        </td>
+                        <td>{{$tr->transaction_time}}</td>
+                        <td>{{$tr->settlement_time}}</td>
+                        <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#orderDetailModal_{{$tr->id}}">
+                            Detail Reservasi
+                            </button>
+                        </td>
+                    </tr>
+                    @endif
+                    @endforeach
+                </tbody>
             </table>
         </div>
+        <!-- tab lunas -->
         <div class="tab-pane fade" id="settlement" role="tabpanel" aria-labelledby="pills-contact-tab">
         <table class="table table-striped">
             <thead>
@@ -294,33 +313,7 @@
                             </form>
                             <button type="submit" class="btn btn-primary" id="pay-button{{$tr->id}}">Selesaikan Pembayaran</button>
                                                         <!-- payment gateway snap -->
-                                                        <script type="text/javascript">
-                                                            // For example trigger on button clicked, or any time you need
-                                                            var payButton = document.getElementById('pay-button{{$tr->id}}');
-                                                            payButton.addEventListener('click', function () {
-                                                                // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
-                                                                window.snap.pay('{{$tr->snapToken}}', {
-                                                                onSuccess: function(result){
-                                                                    /* You may add your own implementation here */
-                                                                    //alert("payment success!");
-                                                                    window.location.href = ''
-                                                                    console.log(result);
-                                                                },
-                                                                onPending: function(result){
-                                                                    /* You may add your own implementation here */
-                                                                    alert("wating your payment!"); console.log(result);
-                                                                },
-                                                                onError: function(result){
-                                                                    /* You may add your own implementation here */
-                                                                    alert("payment failed!"); console.log(result);
-                                                                },
-                                                                onClose: function(){
-                                                                    /* You may add your own implementation here */
-                                                                    alert('you closed the popup without finishing the payment');
-                                                                }
-                                                                })
-                                                            });
-                                                            </script>
+                                                      
                         @else
                             <p class="badge text-bg-seccondary">
                                 {{$tr->payment_status}}
@@ -340,6 +333,7 @@
                 </tbody>
             </table>                                                        
         </div>
+        <!-- tab expire -->
         <div class="tab-pane fade" id="expire" role="tabpanel" aria-labelledby="pills-contact-tab">
         <table class="table table-striped">
             <thead>
@@ -379,34 +373,7 @@
                                 <button onclick="return confirm('Apakah anda yakin ingin membatalkan pesanan ini ?')" type="submit" class="btn btn-danger" >Batalkan Pesanan</button>
                             </form>
                             <button type="submit" class="btn btn-primary" id="pay-button{{$tr->id}}">Selesaikan Pembayaran</button>
-                                                        <!-- payment gateway snap -->
-                                                        <script type="text/javascript">
-                                                            // For example trigger on button clicked, or any time you need
-                                                            var payButton = document.getElementById('pay-button{{$tr->id}}');
-                                                            payButton.addEventListener('click', function () {
-                                                                // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
-                                                                window.snap.pay('{{$tr->snapToken}}', {
-                                                                onSuccess: function(result){
-                                                                    /* You may add your own implementation here */
-                                                                    //alert("payment success!");
-                                                                    window.location.href = ''
-                                                                    console.log(result);
-                                                                },
-                                                                onPending: function(result){
-                                                                    /* You may add your own implementation here */
-                                                                    alert("wating your payment!"); console.log(result);
-                                                                },
-                                                                onError: function(result){
-                                                                    /* You may add your own implementation here */
-                                                                    alert("payment failed!"); console.log(result);
-                                                                },
-                                                                onClose: function(){
-                                                                    /* You may add your own implementation here */
-                                                                    alert('you closed the popup without finishing the payment');
-                                                                }
-                                                                })
-                                                            });
-                                                            </script>
+                                                      
                         @else
                             <p class="badge text-bg-seccondary">
                                 {{$tr->payment_status}}

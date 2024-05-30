@@ -22,6 +22,7 @@ class Controller extends BaseController
             $transactionId = Transaction::where('created_at', $tr)->value('id');
             // $expireTime = date('Y-m-d H:i:s', strtotime($tr . '+5 seconds'));
             $expireTime = date('Y-m-d H:i:s', strtotime($tr . '+15 minutes'));
+            // echo $tr['id'] . ' : '. $expireTime . '<br>' ;
             if($expireTime < $nowDate){
                 $transactionData = [
                     'payment_status' => 'expire'
