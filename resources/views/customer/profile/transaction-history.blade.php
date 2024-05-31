@@ -71,36 +71,7 @@
                                 </form>
                                 <button type="submit" class="btn btn-primary" id="pay-button{{$tr->id}}">Selesaikan Pembayaran</button>
                                                             <!-- payment gateway snap -->
-                                <script type="text/javascript">
-                                    // For example trigger on button clicked, or any time you need
-                                    var payButtons = document.querySelectorAll('#pay-button{{$tr->id}}');
-                                    payButtons.forEach(function(payButton) { 
-                                        payButton.addEventListener('click', function () {
-                                        // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
-                                            window.snap.pay('{{$tr->snapToken}}', {
-                                                onSuccess: function(result){
-                                                    /* You may add your own implementation here */
-                                                    //alert("payment success!");
-                                                    window.location.href = ''
-                                                    console.log(result);
-                                                },
-                                                onPending: function(result){
-                                                    /* You may add your own implementation here */
-                                                    alert("wating your payment!"); console.log(result);
-                                                },
-                                                onError: function(result){
-                                                    /* You may add your own implementation here */
-                                                    alert("payment failed!"); console.log(result);
-                                                },
-                                                onClose: function(){
-                                                    /* You may add your own implementation here */
-                                                    alert('you closed the popup without finishing the payment');
-                                                }
-                                            })
-                                        });
-                                    });
-                                   
-                            </script>
+                               
                             @else
                                 <p class="badge text-bg-seccondary">
                                     {{$tr->payment_status}}
@@ -114,49 +85,7 @@
                             </form>
                             <p class="d-none" id="created_at_{{$tr->id}}">{{$tr->created_at}}</p>
 
-                            <script>
-                                
-                                var createdAt{{$tr->id}} = document.getElementById("created_at_{{$tr->id}}").innerHTML;
-                                var endTimeString{{$tr->id}} = createdAt{{$tr->id}};
-                                var endTimeDate{{$tr->id}} = new Date(endTimeString{{$tr->id}});
-                                var gmt8 = { timeZone: 'Asia/Singapore', hour12: false };
-                                var endTimeStringFormatted{{$tr->id}} = endTimeDate{{$tr->id}}.toLocaleString('en-US', gmt8);
-                                var endTime{{$tr->id}} = new Date(endTimeStringFormatted{{$tr->id}});
-                                endTime{{$tr->id}}.setTime(endTime{{$tr->id}}.getTime() + 15 * 60 * 1000);
-
-                                var countdownDate{{$tr->id}} = endTime{{$tr->id}};
-                                var x = setInterval(function() {
-                                    var now = new Date().getTime();
-                                    var distance{{$tr->id}} = countdownDate{{$tr->id}} - now;
-                                    var hours = Math.floor((distance{{$tr->id}} % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                    var minutes = Math.floor((distance{{$tr->id}} % (1000 * 60 * 60)) / (1000 * 60));
-                                    var seconds = Math.floor((distance{{$tr->id}} % (1000 * 60)) / 1000);
-                                    var countdowns = document.querySelectorAll("#countdown_{{$tr->id}}");
-                                    countdowns.forEach(function(countdown){
-                                        countdown.innerHTML = 'sisa waktu ' + ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
-                                    });
-                                    if (distance{{$tr->id}} < 0) {
-                                        var formsCancel_{{$tr->id}} = document.querySelectorAll('#formCancel_{{$tr->id}}');
-                                        formsCancel_{{$tr->id}}.forEach(function(f){
-                                            f.classList.add('d-none');
-                                        });
-                                        var paymentStatusPending_{{$tr->id}} = document.querySelectorAll("#paymentStatusPending_{{$tr->id}}");
-                                        paymentStatusPending_{{$tr->id}}.forEach(function(p){
-                                            p.innerHTML = 'Transaksi Dibatalkan';
-                                            p.classList.add('text-danger');
-                                            p.classList.remove('text-warning');
-                                            clearInterval(x);
-                                        });
-                                        var paybuttons{{$tr->id}} = document.querySelectorAll('#pay-button{{$tr->id}}');
-                                        paybuttons{{$tr->id}}.forEach(function(pbtn){
-                                            pbtn.classList.add('d-none');
-                                        });
-                                        countdowns.forEach(function(countdown){
-                                            countdown.innerHTML = '';
-                                        });
-                                    }
-                                }, 1000);
-                            </script>
+                           
                         </td>
                         <td>{{$tr->transaction_time}}</td>
                         <td>{{$tr->settlement_time}}</td>
@@ -205,7 +134,6 @@
                                     Pending
                                 </p>
                                 <p id="countdown_{{$tr->id}}"></p>
-                                created at     
                            
                                 <form id="formCancel_{{$tr->id}}" method="post" action="/cancel/{{$tr->id}}">
                                     @csrf
@@ -257,7 +185,49 @@
                                     <button type="submit" class="btn btn-danger" >Batalkan Pesanan</button>
                             </form>
 
+                            <script>
+                                
+                                var createdAt{{$tr->id}} = document.getElementById("created_at_{{$tr->id}}").innerHTML;
+                                var endTimeString{{$tr->id}} = createdAt{{$tr->id}};
+                                var endTimeDate{{$tr->id}} = new Date(endTimeString{{$tr->id}});
+                                var gmt8 = { timeZone: 'Asia/Singapore', hour12: false };
+                                var endTimeStringFormatted{{$tr->id}} = endTimeDate{{$tr->id}}.toLocaleString('en-US', gmt8);
+                                var endTime{{$tr->id}} = new Date(endTimeStringFormatted{{$tr->id}});
+                                endTime{{$tr->id}}.setTime(endTime{{$tr->id}}.getTime() + 15 * 60 * 1000);
 
+                                var countdownDate{{$tr->id}} = endTime{{$tr->id}};
+                                var x = setInterval(function() {
+                                    var now = new Date().getTime();
+                                    var distance{{$tr->id}} = countdownDate{{$tr->id}} - now;
+                                    var hours = Math.floor((distance{{$tr->id}} % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    var minutes = Math.floor((distance{{$tr->id}} % (1000 * 60 * 60)) / (1000 * 60));
+                                    var seconds = Math.floor((distance{{$tr->id}} % (1000 * 60)) / 1000);
+                                    var countdowns = document.querySelectorAll("#countdown_{{$tr->id}}");
+                                    countdowns.forEach(function(countdown){
+                                        countdown.innerHTML = 'sisa waktu ' + ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
+                                    });
+                                    if (distance{{$tr->id}} < 0) {
+                                        var formsCancel_{{$tr->id}} = document.querySelectorAll('#formCancel_{{$tr->id}}');
+                                        formsCancel_{{$tr->id}}.forEach(function(f){
+                                            f.classList.add('d-none');
+                                        });
+                                        var paymentStatusPending_{{$tr->id}} = document.querySelectorAll("#paymentStatusPending_{{$tr->id}}");
+                                        paymentStatusPending_{{$tr->id}}.forEach(function(p){
+                                            p.innerHTML = 'Transaksi Dibatalkan';
+                                            p.classList.add('text-danger');
+                                            p.classList.remove('text-warning');
+                                            clearInterval(x);
+                                        });
+                                        var paybuttons{{$tr->id}} = document.querySelectorAll('#pay-button{{$tr->id}}');
+                                        paybuttons{{$tr->id}}.forEach(function(pbtn){
+                                            pbtn.classList.add('d-none');
+                                        });
+                                        countdowns.forEach(function(countdown){
+                                            countdown.innerHTML = '';
+                                        });
+                                    }
+                                }, 1000);
+                            </script>
                            
                         </td>
                         <td>{{$tr->transaction_time}}</td>
@@ -420,7 +390,7 @@
         <tbody>
                 @foreach($tr->reservations as $ts)
                 <tr>
-                    <td>{{$loop->iteration}}</td>
+                    <td>{{$loop->iteration}}. </td>
                     <td>Tanggal</td>
                     <td> : {{$ts->date}}</td>
                 </tr>
