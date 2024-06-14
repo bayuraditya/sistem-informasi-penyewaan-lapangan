@@ -76,7 +76,13 @@
         total bayar : Rp{{$totalPrice}}  <br>
     <br><br>
         <label for="note" class="form-label">Tambahkan Catatan (Optional)</label><br>
-        <input class="w-25" type="text" class="form-control" name="note">
+        <!-- <input class="w-25" type="text" class="form-control" name="note"> -->
+    <div class="row">
+        <div class="col-12 col-md-3">
+            <textarea rows="3" class="form-control" aria-label="With textarea" name="note"></textarea>
+        </div>
+    </div>
+        <!-- <textarea rows="3" class="form-control w-25 " aria-label="With textarea" name="note"></textarea> -->
                      <br><br>  
         <input type="date" name="date" id=""value="{{$order['date']}}" class="d-none"  > <br>
        

@@ -11,7 +11,6 @@
         </div>
     @endif
 
-
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class=" active btn btn-outline-primary mx-1" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#all" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Semua</button>
@@ -207,7 +206,6 @@
                                         countdown.innerHTML = 'sisa waktu ' + ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
                                     });
                                     if (distance{{$tr->id}} < 0) {
-                                        alert('Pembayaran transaksi ' + {{$tr->id}}  + ' Gagal  karena waktu sudah anda sudah habis!');
                                         var formsCancel_{{$tr->id}} = document.querySelectorAll('#formCancel_{{$tr->id}}');
                                         formsCancel_{{$tr->id}}.forEach(function(f){
                                             f.classList.add('d-none');

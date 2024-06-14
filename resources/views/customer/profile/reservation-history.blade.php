@@ -1,11 +1,11 @@
 
-@extends('layouts.checkout-app')
+@extends('layouts.app')
 
 @section('content')
-<div class="m-5">
-    <h1>Riwayat Reservasi</h1>
-    <div class="contaienr m-5">
-        <table class="table">
+<br>
+    <div class="container">
+        <h1>Riwayat Reservasi</h1>
+        <table class="table table-striped">
             <thead>
                 <tr>
                 <th scope="col">Tanggal</th>
@@ -118,5 +118,3 @@
 @endsection
 
 
-
-</div>

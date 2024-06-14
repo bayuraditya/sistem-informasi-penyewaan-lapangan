@@ -12,29 +12,9 @@
       data-client-key="{{config('midtrans.client_key')}}"></script>
   </head>
   <body>
-    <div class="m-5">
-
-      <a href="/" class="btn btn-primary">HOME</a> <br><br>
-      
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Profil
-        </button>
-        <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/profile">{{$user->name}}</a></li>
-        <li><a class="dropdown-item" href="/profile/reservation-history">Riwayat Reservasi</a></li>
-        <li><a class="dropdown-item" href="/profile/transaction-history">Riwayat Transaksi</a></li>
-        <li>
-          <form id="logout-form" action="{{ route('logout') }}" method="POST">
-            @csrf
-            <input class="dropdown-item" type="submit" value="Logout">
-          </form>
-        </li>
-      </ul>
-    </div>
-  </div>
+    @include('layouts.navbar')
     @yield('content')
-
+    @include('layouts.footer')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>

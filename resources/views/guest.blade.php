@@ -1,4 +1,5 @@
 @extends('layouts.guest-app')
+@section('content')
 <div class="m-5">
 
     <h1>
@@ -14,3 +15,4 @@
     <a href="{{ route('register') }}" class="btn btn-success">{{ __('Register') }}</a>
     
 </div>
+@endsection

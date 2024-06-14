@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            //masi belum pasti
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->decimal('total_amount');

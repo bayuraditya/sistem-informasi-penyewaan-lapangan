@@ -152,7 +152,7 @@ class ReservationController extends Controller
             \Midtrans\Config::$is3ds = true;
             $orderDetails = array(
                 'transaction_details' => array(
-                    'order_id' => $transaction_id,
+                    'order_id' => '$transaction_id',
                     'gross_amount' => $transaction->total_amount,
                 ),
                 'customer_details' => array(
@@ -202,8 +202,13 @@ class ReservationController extends Controller
         
             $transaction = new Transaction;
             $transaction->user_id=Auth::user()->id;
-            $transaction_id =  $transaction->user_id . strtotime($now);
-            $transaction->id = intval($transaction_id);
+            $transaction_id = time();
+            if (Transaction::where('id', $transaction_id)->exists()) {
+                $transaction->id = time();
+            } else {
+                $transaction->id =  $transaction_id += 1;
+            }
+
             // hitung total sesi untuk menenukan harga
             $totalAmount = 0;
             foreach($request->reservation as $courtId => $reservation){
