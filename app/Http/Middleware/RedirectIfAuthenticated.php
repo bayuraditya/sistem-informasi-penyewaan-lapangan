@@ -25,16 +25,14 @@ class RedirectIfAuthenticated
                 if (Auth::guard($guard)->check()) {
                     // return redirect(RouteServiceProvider::ADMIN);
                     return redirect()->intended('/admin');
-
-                }
-            }else if ($request->user() && $request->user()->role == 'customer') {
-                if (Auth::guard($guard)->check()) {
-                    // return redirect(RouteServiceProvider::HOME);
-                    return redirect()->intended('/home');
-
                 }
             }
-
+            // else if ($request->user() && $request->user()->role == 'customer') {
+            //     if (Auth::guard($guard)->check()) {
+            //         // return redirect(RouteServiceProvider::HOME);
+            //         return redirect()->intended('/');
+            //     }
+            // }
         }
 
         return $next($request);

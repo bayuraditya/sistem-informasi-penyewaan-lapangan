@@ -1,18 +1,18 @@
-@extends('layouts.guest-app')
+@extends('layouts.app')
 @section('content')
-<div class="m-5">
-
-    <h1>
-        Guest 
-
-    </h1>
-    <br>
-    
-    login 
-    <a href="{{ route('login') }}" class="btn btn-primary">{{ __('Login') }}</a>
-    <br>
-    register
-    <a href="{{ route('register') }}" class="btn btn-success">{{ __('Register') }}</a>
-    
-</div>
+    <div class="hero-section" style="">
+        <div class="container">
+            <form method="GET" action="{{ route('availableCourts') }}">
+                <h2 class="text-center">BOOKING LAPANGAN</h2><br>
+                <div class="py-3  mx-auto form-group text-dark bg-white d-flex justify-content-center rounded-pill ">
+                    <label for="date" class="my-auto py-auto m-2">Pilih Tanggal:</label>
+                    <div class="d-inline-flex m-2">
+                        <input type="date" class="form-control d-inline-flex" id="date" name="date">
+                    </div>
+                    <button type="submit" class="m-2 px-4 rounded-pill btn text-light"
+                        style="background-color: #4CAF50;">Cari</button>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection

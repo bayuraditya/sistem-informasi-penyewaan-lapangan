@@ -25,9 +25,8 @@ class AuthController extends Controller
             if (Auth::user()->role === 'admin') {
                 return redirect()->intended('/admin');
             } elseif (Auth::user()->role === 'customer') {
-                return redirect()->intended('/home');
+                return redirect()->intended('/');
             }
-            
         }
 
         return back()->withErrors([
@@ -39,7 +38,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect('/login');
+        return redirect()->route('home');
     }
 
     public function showRegistrationForm()
@@ -60,12 +59,11 @@ class AuthController extends Controller
         ]);
 
         // Membuat user baru
-        $user = User::create([
+        User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
             'handphone_number' => $validatedData['handphone_number']
-
         ]);
 
         // Redirect ke halaman tertentu setelah registrasi berhasil
