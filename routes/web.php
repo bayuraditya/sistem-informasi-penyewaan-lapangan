@@ -68,10 +68,18 @@ Route::middleware(['auth'])->group(function () {
 
                 Route::get('/create', [ReservationController::class, 'create'])->name('reservation.create');
                 Route::post('/Manualstore', [ReservationController::class, 'Manualstore'])->name('reservation.store');
-                Route::get('/{id}', [ReservationController::class, 'show'])->name('reservation.show'); //ini keknya gaperlu
-                Route::get('/{id}', [ReservationController::class, 'edit'])->name('reservation.edit');
+                // Route::get('/{id}', [ReservationController::class, 'show'])->name('reservation.show'); //ini keknya gaperlu
+                // Route::get('/{id}', [ReservationController::class, 'edit'])->name('reservation.edit');
                 Route::put('/{id}', [ReservationController::class, 'update'])->name('reservation.update');
                 Route::delete('/{id}', [ReservationController::class, 'destroy'])->name('reservation.destroy');
+
+                /*
+                get, page dit
+                post, update
+                delete, delete
+                */
+                Route::get('/edit/{id}', [AdminController::class, 'editReservation'])->name('reservation.edit');
+                // Route::post('')
             });
             Route::get('/profit', [AdminController::class, 'profit'])->name('profit');
             Route::prefix('transaction')->group(function () {

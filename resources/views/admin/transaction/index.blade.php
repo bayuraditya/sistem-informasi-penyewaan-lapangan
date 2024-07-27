@@ -20,6 +20,7 @@
                             <td>Total Bayar</td>
                             <td>Metode Pembayaran</td>
                             <td>Status Pembayaran</td>
+                            <td>waktu pesanan dibuat</td>
                             <td>Waktu transaksi</td>
                             <td>Waktu Transaksi Lunas</td>
                             <td>Detail Pesanan</td>
@@ -46,7 +47,7 @@
                                             Transaksi Dibatalkan
                                         </p>
                                     @elseif($tr->payment_status == 'pending')
-                                        <p class="badge text-bg-warning">
+                                        <p class="text-warning">
                                             Pending
                                         </p>
                                     @else
@@ -55,6 +56,7 @@
                                         </p>
                                     @endif
                                 </td>
+                                <td>{{ $tr->created_at }}</td>
                                 <td>{{ $tr->transaction_time }}</td>
                                 <td>{{ $tr->settlement_time }}</td>
                                 <td>

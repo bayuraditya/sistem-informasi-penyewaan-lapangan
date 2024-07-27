@@ -46,27 +46,49 @@ class AdminController extends Controller
         $today = $now->format('Y-m-d');
         $court = Court::orderBy('id', 'asc')->first();
         $user = Auth::user();
-        return view('admin.admin', compact('today', 'court', 'user'));
+        /*
+            total user 
+            total transaksi berhasil
+            total reservasi
+            total keuntungan 
+         */ 
+        $totalUser = User::count();
+        $totalSettlementTransaction = Transaction::where('payment_status','settlement')->count();
+        $totalReservation = Reservation::whereHas('transactions', function ($query) {
+            $query->where('payment_status', ['settlement', 'capture']);
+            })->count();
+        $totalProfit = Transaction::whereIn('payment_status', ['settlement', 'capture'])->sum('total_amount');
+        $transactions = Transaction::with(['user', 'reservations.court', 'reservations.rentalSession'])
+        ->orderBy('transaction_time', 'desc')
+        ->take(5)
+        ->get();
+        return view('admin.admin', compact('today', 'court', 'user', 'totalUser', 'totalSettlementTransaction', 'totalReservation', 'totalProfit','transactions'));
     }
 
     public function reservation(Request $request)
     {
         $this->updatePendingPayment();
-
-        // dd($request);
         $user = Auth::user();
         $reservations = Reservation::with('court', 'user', 'rentalSession', 'transactions')
-            ->join('courts', 'reservations.court_id', '=', 'courts.id')
-            ->join('users', 'reservations.user_id', '=', 'users.id')
-            ->join('rental_sessions', 'reservations.rental_session_id', '=', 'rental_sessions.id')
-            ->join('reservation_transaction', 'reservations.id', '=', 'reservation_transaction.reservation_id')
-            ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
-            ->where('transactions.payment_status', 'settlement')
-            ->where('reservations.date', $request->date)
-            // ->where('reservations.court_id', $request->court_id)
-            ->orWhere('transactions.payment_status', 'capture')
-            ->select('reservations.*', 'courts.*', 'users.*', 'rental_sessions.*', 'transactions.*')
-            ->get();
+        ->join('courts', 'reservations.court_id', '=', 'courts.id')
+        ->join('users', 'reservations.user_id', '=', 'users.id')
+        ->join('rental_sessions', 'reservations.rental_session_id', '=', 'rental_sessions.id')
+        ->join('reservation_transaction', 'reservations.id', '=', 'reservation_transaction.reservation_id')
+        ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
+        ->where(function($query) {
+            $query->where('transactions.payment_status', 'settlement')
+                ->orWhere('transactions.payment_status', 'capture');
+        })
+        ->where('reservations.date', $request->date)
+        ->select(
+            'reservations.id as reservation_id', 
+            'reservations.*', 
+            'courts.*', 
+            'users.*', 
+            'rental_sessions.*', 
+            'transactions.*'
+        )
+        ->get();
         $date = $request->date;
         $now = new DateTime();
         $today = $now->format('Y-m-d');
@@ -76,12 +98,12 @@ class AdminController extends Controller
         return view('admin.reservation.index', compact('today', 'court', 'allCourt', 'reservations', 'rentalSession', 'date', 'user'));
     }
 
-    public function createReservation()
-    {
-        $user = Auth::user();
+    // public function createReservation()
+    // {
+    //     $user = Auth::user();
 
-        return view('admin.reservation.create', compact('court', 'user'));
-    }
+    //     return view('admin.reservation.create', compact('court', 'user'));
+    // }
 
 
     public function callback(Request $request)
@@ -402,4 +424,53 @@ class AdminController extends Controller
         // Redirect dengan pesan sukses
         return redirect()->route('adminShowChangePasswordForm')->with('success', 'Kata sandi berhasil diubah.');
     }
+
+    public function createReservation(){
+
+    }
+
+    public function editReservation($id){  
+        
+        $this->updatePendingPayment();
+        $user = Auth::user();
+        $reservations = Reservation::with('court', 'user', 'rentalSession', 'transactions')
+        ->join('courts', 'reservations.court_id', '=', 'courts.id')
+        ->join('users', 'reservations.user_id', '=', 'users.id')
+        ->join('rental_sessions', 'reservations.rental_session_id', '=', 'rental_sessions.id')
+        ->join('reservation_transaction', 'reservations.id', '=', 'reservation_transaction.reservation_id')
+        ->join('transactions', 'reservation_transaction.transaction_id', '=', 'transactions.id')
+        ->where(function($query) {
+            $query->where('transactions.payment_status', 'settlement')
+                ->orWhere('transactions.payment_status', 'capture');
+        })
+        ->where('reservations.id', $id) // Tambahkan kondisi untuk ID reservasi
+        // ->where('reservations.date', $request->date)
+        ->select(
+            'reservations.id as reservation_id', 
+            'reservations.*', 
+            'courts.*', 
+            'users.*', 
+            'rental_sessions.*', 
+            'transactions.*'
+        )
+        ->get();
+
+        // $date = $request->date;
+        $now = new DateTime();
+        $today = $now->format('Y-m-d');
+        $court = Court::orderBy('id', 'asc')->first();
+        $allCourt = Court::all();
+        $rentalSession = RentalSession::all();
+        return view('admin.reservation.edit', compact('today', 'court', 'allCourt', 'reservations', 'rentalSession', 'user'));
+   
+    }
+
+    public function updateReservation(){
+
+    }
+
+    public function deleteReservation(){
+
+    }
+
 }

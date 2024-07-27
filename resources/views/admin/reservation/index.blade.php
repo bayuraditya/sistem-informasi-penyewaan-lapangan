@@ -119,7 +119,7 @@
                                         @foreach ($reservations as $res)
                                             @if ($res->rental_session_time == $ren->rental_session_time)
                                                 @if ($res->court_id == $c->id)
-                                                    <a href="/admin/reservation/{{ $res->id }}" type="submit"
+                                                    <a href="/admin/reservation/edit/{{ $res->reservation_id }}" type="submit"
                                                         class="btn btn-warning">Edit</a>
                                                     <form action="{{ route('reservation.destroy', $res->id) }}"
                                                         method="POST">

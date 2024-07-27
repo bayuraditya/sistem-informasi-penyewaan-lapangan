@@ -114,7 +114,7 @@ class ReservationController extends Controller
         $user = Auth::user();
         return view('customer.booking-detail', compact('reservation', 'order', 'rentalSession', 'allCourt', 'user'));
     }
-
+    
     public function store(Request $request)
     {
         $user = Auth::user();
