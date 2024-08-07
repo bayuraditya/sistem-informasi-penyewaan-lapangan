@@ -8,7 +8,7 @@
                 <p>
                     User : {{ $user->name }}
                     <br>
-                    Tanggal : {{ $date }}
+                     
                 </p>
             </div>
             <div class="card-body">
@@ -19,7 +19,7 @@
                             <div class="col-12">
                                 <label for="date">Pilih Tanggal</label>
                                 <input type="date" class="form-control" name="date" id=""
-                                    value="{{ $today }}">
+                                    value="pilih tanggal">
                             </div>
                             <br>
                             <input type="submit" value="Submit" class="btn btn-primary">
@@ -37,6 +37,9 @@
         </div>
         <div class="card">
             <div class="card-body">
+                <h2>
+                                Tanggal : {{ $date }}
+                            </h2><br>
                 @foreach ($allCourt as $c)
                     <h2>Lapangan : {{ $c->court_name }}</h2>
                     <table class="table table-bordered" id="table2">
@@ -50,7 +53,7 @@
                                 <td>Tanggal</td>
                                 <td>Status Pembayaran</td>
                                 <td>Metode Pembayaran</td>
-                                <td>Action</td>
+                                <td>catatan</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -119,20 +122,12 @@
                                         @foreach ($reservations as $res)
                                             @if ($res->rental_session_time == $ren->rental_session_time)
                                                 @if ($res->court_id == $c->id)
-                                                    <a href="/admin/reservation/edit/{{ $res->reservation_id }}" type="submit"
-                                                        class="btn btn-warning">Edit</a>
-                                                    <form action="{{ route('reservation.destroy', $res->id) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <input
-                                                            onclick="return confirm('Are you sure you want delete reservation {{ $res->id }} ?')"
-                                                            type="submit" class="btn btn-danger" value="DELETE">
-                                                    </form>
+                                                    {{ $res->note }}
                                                 @endif
                                             @endif
                                         @endforeach
                                     </td>
+                                   
                                 </tr>
                             @endforeach
                         </tbody>

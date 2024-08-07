@@ -58,12 +58,21 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('/{id}', [CourtController::class, 'destroy'])->name('court.destroy');
             });
             Route::prefix('reservation')->group(function () {
-                Route::get('/', [AdminController::class, 'reservation'])->name('reservation.index');
-                Route::get('/select-date', [AdminController::class, 'selectDate']);
-                Route::get('/available-courts', [AdminController::class, 'availableCourts']);
-                Route::post('/book', [AdminController::class, 'book'])->name('reservation.book');
-                Route::post('/checkout', [AdminController::class, 'store'])->name('reservation.checkout');
+                Route::get('/select-date', [AdminController::class, 'selectDate'])->name('admin.reservation.home');
+                Route::get('/available-courts', [AdminController::class, 'availableCourts'])->name('admin.availableCourts');
+                Route::post('/book', [AdminController::class, 'book'])->name('admin.reservation.book');
+                Route::post('/checkout', [AdminController::class, 'store'])->name('admin.reservation.checkout');
+                Route::put('/cancel/{id}', [CustomerController::class, 'cancel'])->name('admin.reservation.cancel');
                 Route::get('/invoice/{id}', [AdminController::class, 'invoice']);
+                Route::get('/error?order_id={id}', [AdminController::class, 'error']);
+
+
+                Route::get('/', [AdminController::class, 'reservation'])->name('reservation.index');
+                // Route::get('/select-date', [AdminController::class, 'selectDate']);
+                // // Route::get('/available-courts', [AdminController::class, 'availableCourts']);
+                // Route::post('/book', [AdminController::class, 'book'])->name('reservation.book');
+                // Route::post('/checkout', [AdminController::class, 'store'])->name('reservation.checkout');
+                // Route::get('/invoice/{id}', [AdminController::class, 'invoice']);
                 Route::post('/export', [ExportController::class, 'exportReservation']);
 
                 Route::get('/create', [ReservationController::class, 'create'])->name('reservation.create');
@@ -72,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
                 // Route::get('/{id}', [ReservationController::class, 'edit'])->name('reservation.edit');
                 Route::put('/{id}', [ReservationController::class, 'update'])->name('reservation.update');
                 Route::delete('/{id}', [ReservationController::class, 'destroy'])->name('reservation.destroy');
-
+                
                 /*
                 get, page dit
                 post, update
@@ -85,6 +94,7 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('transaction')->group(function () {
                 Route::get('/', [AdminController::class, 'transaction'])->name('transaction.index');
                 Route::post('/export', [ExportController::class, 'exportTransaction']);
+                Route::delete('/destroy', [AdminController::class, 'deleteTransaction'])->name('transaction.destroy');
             });
             Route::prefix('user')->group(function () {
                 Route::get('/', [AdminController::class, 'allUser'])->name('user.index');
@@ -105,6 +115,7 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('/home', [ReservationController::class, 'index'])->name('home');
         Route::post('/book', [ReservationController::class, 'book'])->name('reservation.book');
         Route::post('/checkout', [ReservationController::class, 'store'])->name('reservation.checkout');
+        Route::post('/checkout-payment', [ReservationController::class, 'checkoutPayment'])->name('reservation.checkoutPayment');
         Route::put('/cancel/{id}', [CustomerController::class, 'cancel'])->name('reservation.cancel');
         Route::get('/invoice/{id}', [ReservationController::class, 'invoice']);
         Route::get('/error?order_id={id}', [ReservationController::class, 'error']);

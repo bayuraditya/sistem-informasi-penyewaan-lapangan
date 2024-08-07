@@ -47,8 +47,7 @@ class ReservationController extends Controller
     //          }
     //      }
     // }
-    public function index()
-    {
+    public function index(){
         // date_default_timezone_set('Asia/Shanghai');
         $todayDateTime = new DateTime();
         $todayDate = $todayDateTime->format('Y-m-d');
@@ -56,8 +55,7 @@ class ReservationController extends Controller
         return view('customer.home', compact('user', 'todayDate'));
     }
 
-    public function availableCourts(Request $request)
-    {
+    public function availableCourts(Request $request){
         $this->updatePendingPayment();
         date_default_timezone_set('Asia/Shanghai');
         $date = $request->input('date');
@@ -94,8 +92,7 @@ class ReservationController extends Controller
         return view('customer.available-courts', compact('unavailableReservations', 'reservations', 'date', 'court', 'allCourt', 'rentalSessions', 'user'));
     }
 
-    public function book(Request $request)
-    {
+    public function book(Request $request){
         $rentalSession = RentalSession::all();
         $allCourt = Court::all();
         $order = array();
@@ -115,91 +112,192 @@ class ReservationController extends Controller
         return view('customer.booking-detail', compact('reservation', 'order', 'rentalSession', 'allCourt', 'user'));
     }
     
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         $user = Auth::user();
-        if ($user->role == 'admin') {
+            // if ($user->role == 'admin') {
 
-            date_default_timezone_set('Asia/Shanghai');
-            $date = $request->input('date');
-            $todayDateTime = new DateTime();
-            $today = $todayDateTime->format('Y-m-d');
-            $now = $todayDateTime->format('Y-m-d H:i:s');
+            //     date_default_timezone_set('Asia/Shanghai');
+            //     $date = $request->input('date');
+            //     $todayDateTime = new DateTime();
+            //     $today = $todayDateTime->format('Y-m-d');
+            //     $now = $todayDateTime->format('Y-m-d H:i:s');
 
-            $transaction = new Transaction;
-            $transaction->user_id = Auth::user()->id;
-            $transaction_id =  $transaction->user_id . strtotime($now);
-            $transaction->id = intval($transaction_id);
-            // hitung total sesi untuk menenukan harga
-            $totalAmount = 0;
-            foreach ($request->reservation as $courtId => $reservation) {
-                foreach ($reservation as $index => $rentalSessionId) {
-                    $price =  RentalSession::where('id', $rentalSessionId)->select('price')->first()['price'];
-                    $sandBoxPrice = 0;
-                    // harga sementara selama pengembangan website
-                    if ($price == 40000) {
-                        $sandBoxPrice = 1;
-                    } else if ($price == 50000) {
-                        $sandBoxPrice = 2;
-                    }
-                    $totalAmount += $sandBoxPrice;
-                }
-            }
-            $transaction->total_amount = $totalAmount;
-            //payment gateway here
-            \Midtrans\Config::$serverKey = config('midtrans.server_key');
-            // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-            // \Midtrans\Config::$isProduction = false;
-            \Midtrans\Config::$isProduction = true;
-            // Set sanitization on (default)
-            \Midtrans\Config::$isSanitized = true;
-            // Set 3DS transaction for credit card to true
-            \Midtrans\Config::$is3ds = true;
-            $orderDetails = array(
-                'transaction_details' => array(
-                    'order_id' => '$transaction_id',
-                    'gross_amount' => $transaction->total_amount,
-                ),
-                'customer_details' => array(
-                    'first_name' => Auth::user()->name,
-                    'last_name' => '',
-                    'phone' => Auth::user()->handphone_number,
-                ),
-            );
-            $order = $request;
-            $snapToken = \Midtrans\Snap::getSnapToken($orderDetails);
-            $transaction->snapToken = $snapToken;
-            $transaction->save();
-            // transaction id blm ngurut
-            foreach ($request->reservation as $courtId => $reservation) {
-                foreach ($reservation as $index => $rentalSessionId) {
-                    $reservation = new Reservation;
-                    $reservation->user_id = Auth::user()->id;
-                    $reservation->rental_session_id = $rentalSessionId;
-                    $reservation->court_id = $courtId;
-                    $reservation->date = $request->date;
-                    $reservation->note = $request->note;
-                    $reservation->save();
-                    $reservation->transactions()->attach($transaction_id);
-                }
-            }
-            $order['reservation'] = $request->reservation;
-            foreach ($order['reservation'] as $courtId => $sesiId) {
-                foreach ($sesiId as $key => $value) {
-                    $reservationDetail['court'][$courtId]['sesi'][$value] = [
-                        'time' => RentalSession::where('id', $value)->select('rental_session_time')->first()['rental_session_time'],
-                        'price' => RentalSession::where('id', $value)->select('price')->first()['price']
-                    ];
-                    $reservationDetail['court'][$courtId]['court_name'] = Court::find($courtId)['court_name'];
-                }
-            }
-            // $transaction->snapToken = $snapToken;
-            // $transaction->save();
-            $rentalSession = RentalSession::all();
-            // dd($order);
-            return view('admin.reservation.index', compact('rentalSession', 'order', 'transaction', 'snapToken', 'reservationDetail', 'user'));
-        } else {
-            date_default_timezone_set('Asia/Shanghai');
+            //     $transaction = new Transaction;
+            //     $transaction->user_id = Auth::user()->id;
+            //     $transaction_id =  $transaction->user_id . strtotime($now);
+            //     $transaction->id = intval($transaction_id);
+            //     // hitung total sesi untuk menenukan harga
+            //     $totalAmount = 0;
+            //     foreach ($request->reservation as $courtId => $reservation) {
+            //         foreach ($reservation as $index => $rentalSessionId) {
+            //             $price =  RentalSession::where('id', $rentalSessionId)->select('price')->first()['price'];
+            //             $sandBoxPrice = 0;
+            //             // harga sementara selama pengembangan website
+            //             if ($price == 40000) {
+            //                 $sandBoxPrice = 1;
+            //             } else if ($price == 50000) {
+            //                 $sandBoxPrice = 2;
+            //             }
+            //             $totalAmount += $sandBoxPrice;
+            //         }
+            //     }
+            //     $transaction->total_amount = $totalAmount;
+            //     //payment gateway here
+            //     \Midtrans\Config::$serverKey = config('midtrans.server_key');
+            //     // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+            //     // \Midtrans\Config::$isProduction = false;
+            //     \Midtrans\Config::$isProduction = true;
+            //     // Set sanitization on (default)
+            //     \Midtrans\Config::$isSanitized = true;
+            //     // Set 3DS transaction for credit card to true
+            //     \Midtrans\Config::$is3ds = true;
+            //     $orderDetails = array(
+            //         'transaction_details' => array(
+            //             'order_id' => '$transaction_id',
+            //             'gross_amount' => $transaction->total_amount,
+            //         ),
+            //         'customer_details' => array(
+            //             'first_name' => Auth::user()->name,
+            //             'last_name' => '',
+            //             'phone' => Auth::user()->handphone_number,
+            //         ),
+            //     );
+            //     $order = $request;
+            //     $snapToken = \Midtrans\Snap::getSnapToken($orderDetails);
+            //     $transaction->snapToken = $snapToken;
+            //     $transaction->save();
+            //     // transaction id blm ngurut
+            //     foreach ($request->reservation as $courtId => $reservation) {
+            //         foreach ($reservation as $index => $rentalSessionId) {
+            //             $reservation = new Reservation;
+            //             $reservation->user_id = Auth::user()->id;
+            //             $reservation->rental_session_id = $rentalSessionId;
+            //             $reservation->court_id = $courtId;
+            //             $reservation->date = $request->date;
+            //             $reservation->note = $request->note;
+            //             $reservation->save();
+            //             $reservation->transactions()->attach($transaction_id);
+            //         }
+            //     }
+            //     $order['reservation'] = $request->reservation;
+            //     foreach ($order['reservation'] as $courtId => $sesiId) {
+            //         foreach ($sesiId as $key => $value) {
+            //             $reservationDetail['court'][$courtId]['sesi'][$value] = [
+            //                 'time' => RentalSession::where('id', $value)->select('rental_session_time')->first()['rental_session_time'],
+            //                 'price' => RentalSession::where('id', $value)->select('price')->first()['price']
+            //             ];
+            //             $reservationDetail['court'][$courtId]['court_name'] = Court::find($courtId)['court_name'];
+            //         }
+            //     }
+            //     // $transaction->snapToken = $snapToken;
+            //     // $transaction->save();
+            //     $rentalSession = RentalSession::all();
+            //     // dd($order);
+            //     return view('admin.reservation.index', compact('rentalSession', 'order', 'transaction', 'snapToken', 'reservationDetail', 'user'));
+            // } else {
+            //     date_default_timezone_set('Asia/Shanghai');
+            //     $date = $request->input('date');
+            //     $todayDateTime = new DateTime();
+            //     $today = $todayDateTime->format('Y-m-d');
+            //     $now = $todayDateTime->format('Y-m-d H:i:s');
+
+            //     $transaction = new Transaction;
+            //     $transaction->user_id = Auth::user()->id;
+            //     $transaction_id = time();
+            //     if (Transaction::where('id', $transaction_id)->exists()) {
+            //         $transaction->id = time();
+            //     } else {
+            //         $transaction->id =  $transaction_id += 1;
+            //     }
+
+            //     // hitung total sesi untuk menenukan harga
+            //     $totalAmount = 0;
+            //     foreach ($request->reservation as $courtId => $reservation) {
+            //         foreach ($reservation as $index => $rentalSessionId) {
+            //             $price =  RentalSession::where('id', $rentalSessionId)->select('price')->first()['price'];
+            //             $sandBoxPrice = 0;
+            //             // harga sementara selama pengembangan website
+            //             if ($price == 40000) {
+            //                 $sandBoxPrice = 1;
+            //             } else if ($price == 50000) {
+            //                 $sandBoxPrice = 1;
+            //             }
+            //             $totalAmount += $sandBoxPrice;
+            //         }
+            //     }
+            //     //Count sum reservation
+            //     $amountReservation = count($request->reservation);
+
+            //     $transaction->total_amount = $totalAmount;
+            //     //payment gateway here
+            //     \Midtrans\Config::$serverKey = config('midtrans.server_key');
+            //     // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+            //     // \Midtrans\Config::$isProduction = false;
+            //     \Midtrans\Config::$isProduction = true;
+            //     // Set sanitization on (default)
+            //     \Midtrans\Config::$isSanitized = true;
+            //     // Set 3DS transaction for credit card to true
+            //     \Midtrans\Config::$is3ds = true;
+            //     $orderDetails = array(
+            //         'transaction_details' => array(
+            //             'order_id' => $transaction_id,
+            //             'gross_amount' => $transaction->total_amount,
+            //         ),
+            //         'customer_details' => array(
+            //             'first_name' => Auth::user()->name,
+            //             'last_name' => '',
+            //             'phone' => Auth::user()->handphone_number,
+            //         ),
+            //         'item_details' => array(
+            //             array(
+            //                 'id' => $transaction_id,
+            //                 'price' => $transaction->total_amount,
+            //                 'quantity' => $amountReservation,
+            //                 'name' => 'Sesi Lapangan',
+            //             ),
+            //         ),
+            //     );
+            //     $order = $request;
+            //     $snapToken = \Midtrans\Snap::getSnapToken($orderDetails);
+            //     $transaction->snapToken = $snapToken;
+            //     $transaction->save();
+            //     // transaction id blm ngurut
+            //     foreach ($request->reservation as $courtId => $reservation) {
+            //         foreach ($reservation as $index => $rentalSessionId) {
+            //             $reservation = new Reservation;
+            //             $reservation->user_id = Auth::user()->id;
+            //             $reservation->rental_session_id = $rentalSessionId;
+            //             $reservation->court_id = $courtId;
+            //             $reservation->date = $request->date;
+            //             $reservation->note = $request->note;
+            //             $reservation->save();
+            //             $reservation->transactions()->attach($transaction_id);
+            //         }
+            //     }
+            //     $order['reservation'] = $request->reservation;
+            //     foreach ($order['reservation'] as $courtId => $sesiId) {
+            //         foreach ($sesiId as $key => $value) {
+            //             $reservationDetail['court'][$courtId]['sesi'][$value] = [
+            //                 'time' => RentalSession::where('id', $value)->select('rental_session_time')->first()['rental_session_time'],
+            //                 'price' => RentalSession::where('id', $value)->select('price')->first()['price']
+            //             ];
+            //             $reservationDetail['court'][$courtId]['court_name'] = Court::find($courtId)['court_name'];
+            //         }
+            //     }
+
+            //     // $transaction->snapToken = $snapToken;
+            //     // $transaction->save();
+            //     $rentalSession = RentalSession::all();
+            //     // dd($order);
+            //     return view('customer.checkout', compact('rentalSession', 'order', 'transaction', 'snapToken', 'reservationDetail', 'user'));
+            // }
+
+
+
+
+
+
+        date_default_timezone_set('Asia/Shanghai');
             $date = $request->input('date');
             $todayDateTime = new DateTime();
             $today = $todayDateTime->format('Y-m-d');
@@ -294,17 +392,30 @@ class ReservationController extends Controller
             $rentalSession = RentalSession::all();
             // dd($order);
             return view('customer.checkout', compact('rentalSession', 'order', 'transaction', 'snapToken', 'reservationDetail', 'user'));
-        }
+            // return redirect('/checkout');
+            // return redirect('/checkout-payment')->with(['snapToken' => $snapToken]);
+            // return redirect('/checkout')->with([
+            //     'rentalSession' => $rentalSession,
+            //     'order' => $order,
+            //     'transaction' => $transaction,
+            //     'snapToken' => $snapToken,
+            //     'reservationDetail' => $reservationDetail,
+            //     'user' => $user
+            //     ]);
     }
+    public function checkoutPayment($snapToken){
+        
+        dd($snapToken);
+        return view('customer.checkout', compact('rentalSession', 'order', 'transaction', 'snapToken', 'reservationDetail', 'user'));
 
-    public function invoice($id)
-    {
+    }
+    public function invoice($id){
         $transaction = Transaction::find($id);
         $user = Auth::user();
         return view('customer.invoice', compact('user', 'transaction'));
     }
-    public function callback(Request $request)
-    {
+
+    public function callback(Request $request){
         $serverKey = config('midtrans.server_key');
         $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
 

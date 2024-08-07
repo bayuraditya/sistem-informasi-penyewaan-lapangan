@@ -24,6 +24,7 @@
                             <td>Waktu transaksi</td>
                             <td>Waktu Transaksi Lunas</td>
                             <td>Detail Pesanan</td>
+                            <td>Action</td>
 
                         </tr>
                     </thead>
@@ -65,6 +66,18 @@
                                         Detail Reservasi
                                     </button>
                                 </td>
+                                <td>
+                                      
+                                                    <form action="{{ route('transaction.destroy', $tr->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <input
+                                                            onclick="return confirm('Are you sure you want delete transaction {{ $tr->id }} ?')"
+                                                            type="submit" class="btn btn-danger" value="DELETE">
+                                                    </form>
+                                               
+                                    </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -128,6 +141,7 @@
                                         <td><strong>Jam</strong></td>
                                         <td>{{ $ts->rentalSession->rental_session_time }}</td>
                                     </tr>
+                                    
                                 </tbody>
                             </table>
                         @endforeach
