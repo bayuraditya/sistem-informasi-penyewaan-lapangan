@@ -10,6 +10,7 @@
     @stack('prepend-styles')
     @include('includes.styles')
     @stack('addon-styles')
+    @yield('style')
 
 </head>
 

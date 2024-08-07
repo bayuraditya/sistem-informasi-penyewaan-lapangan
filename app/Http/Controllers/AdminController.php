@@ -417,7 +417,7 @@ class AdminController extends Controller
 
         $user = Auth::user();
         if ($date <= $yesterdayString) {
-            return redirect()->route('home');
+            return redirect('/admin/reservation/select-date');
         } else {
             return view('admin.reservation.available-courts', compact('unavailableReservations', 'reservations', 'date', 'court', 'allCourt', 'rentalSessions', 'user'));
         }
@@ -425,20 +425,25 @@ class AdminController extends Controller
     }
 
     public function book(Request $request){
+        // dd($request);
         $rentalSession = RentalSession::all();
         $allCourt = Court::all();
         $order = array();
         $order['user_id'] = Auth::user()->id;
         $order['date'] = $request->date;
         $order['reservation'] = $request->reservation;
-        foreach ($order['reservation'] as $courtId => $sesiId) {
-            foreach ($sesiId as $key => $value) {
-                $reservation['court'][$courtId]['sesi'][$value] = [
-                    'time' => RentalSession::where('id', $value)->select('rental_session_time')->first()['rental_session_time'],
-                    'price' => RentalSession::where('id', $value)->select('price')->first()['price']
-                ];
-                $reservation['court'][$courtId]['court_name'] = Court::find($courtId)['court_name'];
-            }
+        if ($request->has('reservation')) {
+            foreach ($order['reservation'] as $courtId => $sesiId) {
+                        foreach ($sesiId as $key => $value) {
+                            $reservation['court'][$courtId]['sesi'][$value] = [
+                                'time' => RentalSession::where('id', $value)->select('rental_session_time')->first()['rental_session_time'],
+                                'price' => RentalSession::where('id', $value)->select('price')->first()['price']
+                            ];
+                            $reservation['court'][$courtId]['court_name'] = Court::find($courtId)['court_name'];
+                        }
+                    }
+        } else {
+            return redirect('/admin/reservation/available-courts?date='.$request->date);
         }
         $user = Auth::user();
         return view('admin.reservation.booking-detail', compact('reservation', 'order', 'rentalSession', 'allCourt', 'user'));

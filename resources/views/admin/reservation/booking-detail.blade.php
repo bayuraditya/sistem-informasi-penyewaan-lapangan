@@ -1,7 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.admin-app')
 
 @section('content')
-    <div class="container" style="margin-top: 100px; margin-bottom: 100px">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+         
         <h1 class="mb-4">Detail Pesanan</h1>
 
         <form action="checkout" method="post">
@@ -15,11 +18,11 @@
                 $totalPrice = 0;
             @endphp
 
-            <div class="d-flex gap-5">
+            <div class="d-flex gap-5 flex-wrap">
                 @foreach ($reservation as $index => $reservation)
                     @foreach ($reservation as $courtId => $courts)
                         @foreach ($courts['sesi'] as $rentalSessionId => $rentalSessionDetail)
-                            <div class="mb-3">
+                            <div class="mb-3 table-responsive">
                                 <table class="table table-borderless" style="width: fit-content">
                                     <tr>
                                         <td>Lapangan</td>
@@ -102,4 +105,37 @@
             submitButton.disabled = !this.checked;
         });
     </script>
+
+
+            <div class="card-body">
+           
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                 </div>
+        </div>
+    </div>
+
+    <!-- <div class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Masukan Tanggal dan Nama Penyewa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/reservation/available-courts" method="post">
+                        <label for="date">Tanggal</label>
+                        <input type="date">
+                        <label for="name">Nama Penyewa</label>
+                        <input type="text">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Lihat Ketersediaan Lapangan</button>
+                </div>
+            </div>
+        </div>
+    </div> -->
 @endsection

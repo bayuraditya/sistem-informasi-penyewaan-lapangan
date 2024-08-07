@@ -93,20 +93,25 @@ class ReservationController extends Controller
     }
 
     public function book(Request $request){
+        
         $rentalSession = RentalSession::all();
         $allCourt = Court::all();
         $order = array();
         $order['user_id'] = Auth::user()->id;
         $order['date'] = $request->date;
         $order['reservation'] = $request->reservation;
-        foreach ($order['reservation'] as $courtId => $sesiId) {
-            foreach ($sesiId as $key => $value) {
-                $reservation['court'][$courtId]['sesi'][$value] = [
-                    'time' => RentalSession::where('id', $value)->select('rental_session_time')->first()['rental_session_time'],
-                    'price' => RentalSession::where('id', $value)->select('price')->first()['price']
-                ];
-                $reservation['court'][$courtId]['court_name'] = Court::find($courtId)['court_name'];
-            }
+        if ($request->has('reservation')) {
+            foreach ($order['reservation'] as $courtId => $sesiId) {
+                        foreach ($sesiId as $key => $value) {
+                            $reservation['court'][$courtId]['sesi'][$value] = [
+                                'time' => RentalSession::where('id', $value)->select('rental_session_time')->first()['rental_session_time'],
+                                'price' => RentalSession::where('id', $value)->select('price')->first()['price']
+                            ];
+                            $reservation['court'][$courtId]['court_name'] = Court::find($courtId)['court_name'];
+                        }
+                    }
+        } else {
+            return redirect('/available-courts?date='.$request->date);
         }
         $user = Auth::user();
         return view('customer.booking-detail', compact('reservation', 'order', 'rentalSession', 'allCourt', 'user'));

@@ -15,11 +15,11 @@
                 $totalPrice = 0;
             @endphp
 
-            <div class="d-flex gap-5">
+            <div class="d-flex gap-5 flex-wrap">
                 @foreach ($reservation as $index => $reservation)
                     @foreach ($reservation as $courtId => $courts)
                         @foreach ($courts['sesi'] as $rentalSessionId => $rentalSessionDetail)
-                            <div class="mb-3">
+                            <div class="mb-3 table-responsive">
                                 <table class="table table-borderless" style="width: fit-content">
                                     <tr>
                                         <td>Lapangan</td>

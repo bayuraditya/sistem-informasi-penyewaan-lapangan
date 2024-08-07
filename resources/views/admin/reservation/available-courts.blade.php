@@ -1,11 +1,11 @@
-@extends('layouts.app')
 
+@extends('layouts.admin-app')
 @section('style')
     <style>
         .btn-reservation {
             border-radius: 5px;
             cursor: pointer;
-            border: 1px solid #4CAF50;
+            border: 1px solid #4CAF50 !important;
         }
 
         .btn-check:checked+.btn {
@@ -21,8 +21,14 @@
 @endsection
 
 @section('content')
-    <div class="container" style="margin-top: 100px; margin-bottom: 100px;">
-        <h1 class="mb-4 text-primary">Pilih Sesi</h1>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+
+
+
+
+            <h1 class="mb-4 ">Pilih Sesi</h1>
         <form action="book" method="POST">
             @csrf
 
@@ -31,7 +37,7 @@
             @endphp
 
             @foreach ($allCourt as $ac)
-                <h3 class="text-primary">Lapangan {{ $ac->court_name }}</h3>
+                <h3 class="">Lapangan {{ $ac->court_name }}</h3>
                 <img src="{{ asset('assets-user/img/facility.jpg') }}" alt="" class="img-fluid rounded-4 w-50 mb-5">
                 <div class="row">
                     @foreach ($rentalSessions as $re)
@@ -47,10 +53,10 @@
                                     value="{{ $re->id }}">
                                 <label style="width: 100%;" class="btn btn-reservation"
                                     for="btn-check-outlined_{{ $ac->id }}_{{ $re->id }}">
-                                    <p class="m-0 text-secondary" style="font-size: smaller;">60 menit</p>
-                                    <p class="m-0 text-dark fw-semibold">{{ $re->rental_session_time }}</p>
-                                    <p class="m-0 text-muted" style="font-size: smaller;">
-                                        {{ 'Rp ' . number_format($re->price, 0, ',', '.') }}</p>
+                                    <h6 class="m-0 " style="font-size: smaller;">60 menit</h6>
+                                    <p class="m-0  ">{{ $re->rental_session_time }}</p>
+                                    <h6 class="m-0 " style="font-size: smaller;">
+                                        {{ 'Rp ' . number_format($re->price, 0, ',', '.') }}</h6>
                                 </label>
                             </div>
                         </div>
@@ -64,5 +70,15 @@
                 <button type="submit" class="btn btn-primary fw-bolder">Book</button>
             </div>
         </form>
+
+
+
+
+            </div>
+            <div class="card-body">
+
+            </div>
+        </div>
+       
     </div>
 @endsection
