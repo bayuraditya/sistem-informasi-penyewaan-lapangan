@@ -8,6 +8,7 @@ use DateTime;
 use App\Models\Court;
 use App\Models\RentalSession;
 use App\Models\Reservation;
+use App\Models\ReservationTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
@@ -155,7 +156,44 @@ class AdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
         $user = Auth::user();
+        // dd($transactions[68]['reservations'][0]);
         return view('admin.transaction.index', compact('transactions', 'user', 'today'));
+    }
+
+    public function deleteReservationTransaction($id){
+        
+        /* 
+            - cari id transaksi FINDORFAIL ID
+            - cari reservationtransaction yg ada id transaksi SELECT WHERE
+            - udah ketemu id reservation nya, di detach FOREACH 
+            - delete id transaksi DESTROY
+            - delete id reservasi DESTROY
+        
+        */
+        $transaction = Transaction::findOrFail($id);
+        $transactionId = Transaction::findOrFail($id)->id;
+        $reservationTransaction = ReservationTransaction::where('transaction_id',$transactionId)->get();
+        foreach($reservationTransaction as $rt){
+            $reservation = Reservation::where('id',$rt->id)->first();
+            // dd($reservation);
+            $reservation->transactions()->detach($transactionId);
+            $reservation->delete();
+            // echo $rt->id.'<br>';
+            // $reservation->transactions()->attach($transaction_id);
+            // $rt->transaction()->detach($transactionId);
+            // $user->roles()->attach($roleId);
+            // $user->roles()->detach($roleId);
+
+        }        
+        $transaction->delete();
+        
+        // dd($reservationTransaction);
+        // dd($reservationTransaction);
+        // dd($transactionId);
+        // $transaction->reservation()->detach();
+        // $transaction->delete();
+        return redirect('/admin/transaction')
+        ->with('success', 'Transaction deleted successfully');
     }
 
     public function allUser()
@@ -720,10 +758,6 @@ class AdminController extends Controller
 
     }
 
-    public function deleteReservationTransaction($id){
-        $transaction = Transaction::findOrFail($id);
-        $transaction->reservation()->detach();
-        $transaction->delete();
-    }
+   
 
 }

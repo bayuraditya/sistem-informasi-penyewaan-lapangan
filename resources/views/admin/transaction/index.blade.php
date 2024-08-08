@@ -11,6 +11,12 @@
                 </button>
             </div>
             <div class="card-body">
+            @if (session('success'))
+                    <div class="alert-success alert  alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <table class="table table-bordered" id="table1">
                     <thead>
                         <tr>
@@ -68,7 +74,7 @@
                                 </td>
                                 <td>
                                       
-                                                    <form action="{{ route('transaction.destroy', $tr->id) }}"
+                                                    <form action="{{ route('transaction.destroy',['id' => $tr->id]) }}"
                                                         method="POST">
                                                         @csrf
                                                         @method('DELETE')

@@ -94,7 +94,7 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('transaction')->group(function () {
                 Route::get('/', [AdminController::class, 'transaction'])->name('transaction.index');
                 Route::post('/export', [ExportController::class, 'exportTransaction']);
-                Route::delete('/destroy', [AdminController::class, 'deleteTransaction'])->name('transaction.destroy');
+                Route::delete('/destroy/{id}', [AdminController::class, 'deleteReservationTransaction'])->name('transaction.destroy');
             });
             Route::prefix('user')->group(function () {
                 Route::get('/', [AdminController::class, 'allUser'])->name('user.index');

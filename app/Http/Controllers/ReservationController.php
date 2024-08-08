@@ -301,7 +301,6 @@ class ReservationController extends Controller
 
 
 
-
         date_default_timezone_set('Asia/Shanghai');
             $date = $request->input('date');
             $todayDateTime = new DateTime();
@@ -410,7 +409,7 @@ class ReservationController extends Controller
     }
     public function checkoutPayment($snapToken){
         
-        dd($snapToken);
+        // dd($snapToken);
         return view('customer.checkout', compact('rentalSession', 'order', 'transaction', 'snapToken', 'reservationDetail', 'user'));
 
     }
