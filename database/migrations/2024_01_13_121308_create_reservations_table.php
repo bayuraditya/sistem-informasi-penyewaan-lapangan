@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('court_id');
+            $table->unsignedBigInteger('court_id')->nullable(); ;
             $table->unsignedBigInteger('rental_session_id');
             $table->date('date');
             $table->string('note')->nullable();
          
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('court_id')->references('id')->on('courts')->onDelete('cascade');
+            $table->foreign('court_id')->references('id')->on('courts')->onDelete('set null');
             $table->foreign('rental_session_id')->references('id')->on('rental_sessions')->onDelete('NO ACTION');
        
             $table->timestamps();

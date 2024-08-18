@@ -40,7 +40,7 @@ class ExportController extends Controller
         })
         ->get();
         $user = Auth::user();
-        $pdf = PDF::loadview('admin.transaction.export',compact('transactions','startDate','endDate','user'));
+        $pdf = PDF::loadview('guest',compact('transactions','startDate','endDate','user'));
     	return $pdf->download();
 
     }

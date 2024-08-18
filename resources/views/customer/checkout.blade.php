@@ -17,7 +17,7 @@
 
         <strong>Detail Reservasi: </strong>
 
-        <div class="d-flex gap-5">
+        <div class="d-flex gap-5 flex-wrap">
             @foreach ($reservationDetail as $index => $reservation)
                 @foreach ($reservation as $courtId => $courts)
                     @foreach ($courts['sesi'] as $rentalSessionId => $rentalSessionDetail)

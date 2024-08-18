@@ -142,8 +142,11 @@
                         </ul>
                     </li>
                 @else
-                    <li class="nav-item mx-xl-4 ">
+                    <li class="nav-item mb-2">
                         <a class="btn btn-outline-light" href="/login">Login</a>
+                    </li>
+                    <li class=" nav-item mx-xl-2 ">
+                        <a class="btn btn-outline-light" href="/register">Register</a>
                     </li>
                 @endif
             </ul>
