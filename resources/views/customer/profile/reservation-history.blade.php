@@ -68,15 +68,7 @@
                                     <td>Tanggal Bayar</td>
                                     <td> : {{ $t->settlement_time }}</td>
                                 </tr>
-                                @if ($t->payment_status == 'pending')
-                                    <tr>
-                                        <td>
-                                            <button type="submit" class="btn btn-primary"
-                                                id="pay-button{{ $t->id }}">Selesaikan Pembayaran</button>
-
-                                        </td>
-                                    </tr>
-                                @endif
+                               
                             </table>
                         </div>
                         <div class="modal-footer">

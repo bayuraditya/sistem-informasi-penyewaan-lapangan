@@ -32,7 +32,8 @@
 
             @foreach ($allCourt as $ac)
                 <h3 class="text-primary">Lapangan {{ $ac->court_name }}</h3>
-                <img src="{{ asset('assets-user/img/facility.jpg') }}" alt="" class="img-fluid rounded-4 w-50 mb-5">
+                <img src="http://127.0.0.1:8000/assets-user/img/{{ $ac->court_name }}.jpg" alt="" class="img-fluid rounded-4 w-50 mb-5">
+                <!-- <img src="https://sanglahbadmintoncenter.com/assets-user/img/{{ $ac->court_name }}.jpg"  alt="" class="img-fluid rounded-4 w-50 mb-5"> -->
                 <div class="row">
                     @foreach ($rentalSessions as $re)
                         <div class="col-4 col-md-3 col-lg-2 mb-3">

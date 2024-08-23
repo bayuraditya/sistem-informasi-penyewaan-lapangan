@@ -141,7 +141,7 @@
                                     </tr>
                                     <tr>
                                         <td><strong>Lapangan</strong></td>
-                                        <td>{{ $ts->court->court_name }}</td>
+                                        <td>{{ $ts->court_id }}</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Jam</strong></td>
