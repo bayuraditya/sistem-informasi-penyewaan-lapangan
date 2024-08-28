@@ -24,10 +24,6 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-
-
-
-
             <h1 class="mb-4 ">Pilih Sesi</h1>
         <form action="book" method="POST">
             @csrf
@@ -35,12 +31,22 @@
             @php
                 $j = 7;
             @endphp
-
+            @foreach ($rentalSessions as $re)
+                @php
+                    if($memberCategory == 'member'){
+                        $re->price-=5000;
+                    }
+                @endphp
+            @endforeach
             @foreach ($allCourt as $ac)
                 <h3 class="">Lapangan {{ $ac->court_name }}</h3>
-                <img src="{{ asset('assets-user/img/facility.jpg') }}" alt="" class="img-fluid rounded-4 w-50 mb-5">
+                <img src="http://127.0.0.1:8000/assets-user/img/{{ $ac->court_name }}.jpg" alt="" class="img-fluid rounded-4 w-50 mb-5">
+                <!-- <img src="https://sanglahbadmintoncenter.com/assets-user/img/{{ $ac->court_name }}.jpg"  alt="" class="img-fluid rounded-4 w-50 mb-5"> -->
+
                 <div class="row">
+               
                     @foreach ($rentalSessions as $re)
+                    
                         <div class="col-4 col-md-3 col-lg-2 mb-3">
                             <div class="d-flex flex-column align-items-center">
                                 <input
@@ -56,6 +62,7 @@
                                     <h6 class="m-0 " style="font-size: smaller;">60 menit</h6>
                                     <p class="m-0  ">{{ $re->rental_session_time }}</p>
                                     <h6 class="m-0 " style="font-size: smaller;">
+                                   
                                         {{ 'Rp ' . number_format($re->price, 0, ',', '.') }}</h6>
                                 </label>
                             </div>
@@ -66,11 +73,11 @@
             @endforeach
 
             <input type="text" class="visually-hidden" value="{{ $date }}" name="date">
+            <input type="text" class="visually-hidden" value="{{ $memberCategory }}" name="memberCategory">
             <div class="d-grid gap-2 col-4 mx-auto">
                 <button type="submit" class="btn btn-primary fw-bolder">Book</button>
             </div>
         </form>
-
 
 
 

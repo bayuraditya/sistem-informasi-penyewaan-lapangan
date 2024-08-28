@@ -23,7 +23,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="exampleFormControlTextarea1" class="form-label">Deskripsi</label>
-                        <textarea class="form-control" id="description" rows="3" name="description" value="{{ $court->description }}"></textarea>
+                        <textarea class="form-control" id="description" rows="3" name="description" >{{ $court->description }}</textarea>
                     </div>
                     <button type="submit" class="btn btn-success">Update</button>
                 </form>

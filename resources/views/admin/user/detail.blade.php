@@ -1,7 +1,9 @@
 @extends('layouts.admin-app')
 @section('content')
-<div class="m-5">
-    <h1>Detail User</h1>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+            <h1>Detail User</h1>
     <table>
         
         <tr>
@@ -20,7 +22,7 @@
             <td> {{$userDetail->handphone_number}} </td>
         </tr>
     </table>
-    riwayat Reservasi
-    riwayat transaksi
-</div>
+            </div>
+        </div>
+    </div>
 @endsection

@@ -60,7 +60,6 @@
                                                                         <td>
                                                                             {{ 'Rp ' . number_format($t->total_amount, 0, ',', '.') }}
                                                                         </td>
-                                                                        <td></td>
                                                                         <td>{{ $t->payment_status }}</td>
                                                                         <td>{{ $t->payment_method }}</td>
                                                                         <td>{{ $t->settlement_time }}</td>

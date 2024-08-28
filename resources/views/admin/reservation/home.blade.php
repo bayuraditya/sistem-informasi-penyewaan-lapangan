@@ -16,6 +16,14 @@
                     <div class="d-inline-flex m-2">
                         <input type="date" class="form-control d-inline-flex" id="date" name="date">
                     </div>
+                    <div class="form-check mb-4">
+                
+                <input class="form-check-box" type="radio" checked id="regular" name="memberCategory" value="regular">
+                <label class="form-check-label" for="regular" >Umum</label><br>
+
+                <input class="form-check-box" type="radio" id="member"  name="memberCategory" value="member">
+                <label class="form-check-label" for="member">Member</label><br>
+            </div>
                     <button type="submit" class="m-2 px-4 rounded-pill btn text-light"
                         style="background-color: #4CAF50;">Cari</button>
                 </div>
@@ -27,26 +35,4 @@
                  </div>
         </div>
     </div>
-
-    <!-- <div class="modal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Masukan Tanggal dan Nama Penyewa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="/admin/reservation/available-courts" method="post">
-                        <label for="date">Tanggal</label>
-                        <input type="date">
-                        <label for="name">Nama Penyewa</label>
-                        <input type="text">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Lihat Ketersediaan Lapangan</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
 @endsection

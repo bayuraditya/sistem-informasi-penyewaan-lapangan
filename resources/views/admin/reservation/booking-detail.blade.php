@@ -116,26 +116,4 @@
                  </div>
         </div>
     </div>
-
-    <!-- <div class="modal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Masukan Tanggal dan Nama Penyewa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="/admin/reservation/available-courts" method="post">
-                        <label for="date">Tanggal</label>
-                        <input type="date">
-                        <label for="name">Nama Penyewa</label>
-                        <input type="text">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Lihat Ketersediaan Lapangan</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
 @endsection

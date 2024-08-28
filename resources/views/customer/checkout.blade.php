@@ -74,6 +74,7 @@
 @endsection
 
 @section('script')
+<!-- countdown -->
     <script>
         var createdAt{{ $transaction->id }} = document.getElementById("created_at_{{ $transaction->id }}").innerHTML;
         var endTime{{ $transaction->id }} = new Date(new Date(createdAt{{ $transaction->id }}).getTime() + 15 * 60 *

@@ -24,9 +24,7 @@ use App\Models\Reservation;
 
 
 Route::middleware(['guest'])->group(function () {
-    // Route::get('/', function () {
-    //     return view('guest');
-    // });
+
     Route::get('/', [ReservationController::class, 'index'])->name('home');
     Route::get('/price', function () {
         $user = auth()->user();
@@ -37,8 +35,7 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
-})->middleware('skip.ngrok.warning');
-
+});
 
 
 
@@ -58,6 +55,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('/{id}', [CourtController::class, 'destroy'])->name('court.destroy');
             });
             Route::prefix('reservation')->group(function () {
+                Route::get('/', [AdminController::class, 'reservation'])->name('reservation.index');
+                
                 Route::get('/select-date', [AdminController::class, 'selectDate'])->name('admin.reservation.home');
                 Route::get('/available-courts', [AdminController::class, 'availableCourts'])->name('admin.availableCourts');
                 Route::post('/book', [AdminController::class, 'book'])->name('admin.reservation.book');
@@ -65,30 +64,9 @@ Route::middleware(['auth'])->group(function () {
                 Route::put('/cancel/{id}', [CustomerController::class, 'cancel'])->name('admin.reservation.cancel');
                 Route::get('/invoice/{id}', [AdminController::class, 'invoice']);
                 Route::get('/error?order_id={id}', [AdminController::class, 'error']);
-
-
-                Route::get('/', [AdminController::class, 'reservation'])->name('reservation.index');
-                // Route::get('/select-date', [AdminController::class, 'selectDate']);
-                // // Route::get('/available-courts', [AdminController::class, 'availableCourts']);
-                // Route::post('/book', [AdminController::class, 'book'])->name('reservation.book');
-                // Route::post('/checkout', [AdminController::class, 'store'])->name('reservation.checkout');
-                // Route::get('/invoice/{id}', [AdminController::class, 'invoice']);
+              
                 Route::post('/export', [ExportController::class, 'exportReservation']);
-
-                Route::get('/create', [ReservationController::class, 'create'])->name('reservation.create');
-                Route::post('/Manualstore', [ReservationController::class, 'Manualstore'])->name('reservation.store');
-                // Route::get('/{id}', [ReservationController::class, 'show'])->name('reservation.show'); //ini keknya gaperlu
-                // Route::get('/{id}', [ReservationController::class, 'edit'])->name('reservation.edit');
-                Route::put('/{id}', [ReservationController::class, 'update'])->name('reservation.update');
-                Route::delete('/{id}', [ReservationController::class, 'destroy'])->name('reservation.destroy');
-                
-                /*
-                get, page dit
-                post, update
-                delete, delete
-                */
-                Route::get('/edit/{id}', [AdminController::class, 'editReservation'])->name('reservation.edit');
-                // Route::post('')
+        
             });
             Route::get('/profit', [AdminController::class, 'profit'])->name('profit');
             Route::prefix('transaction')->group(function () {

@@ -61,6 +61,7 @@
                             <td>Total Bayar</td>
                             <td>Metode Pembayaran</td>
                             <td>Status Pembayaran</td>
+                            <td>waktu transaksi dibuat</td>
                             <td>Waktu transaksi</td>
                             <td>Waktu Transaksi Lunas</td>
                             <td>Detail Pesanan</td>
@@ -114,8 +115,8 @@
                                     </form>
                                     <p class="d-none" id="created_at_{{ $tr->id }}">{{ $tr->created_at }}</p>
 
-
                                 </td>
+                                <td>{{ $tr->created_at }}</td>
                                 <td>{{ $tr->transaction_time }}</td>
                                 <td>{{ $tr->settlement_time }}</td>
                                 <td>
@@ -138,6 +139,7 @@
                             <td>Total Bayar</td>
                             <td>Metode Pembayaran</td>
                             <td>Status Pembayaran</td>
+                            <td>waktu transaksi dibuat</td>
                             <td>Waktu transaksi</td>
                             <td>Waktu Transaksi Lunas</td>
                             <td>Detail Pesanan</td>
@@ -271,6 +273,7 @@
                                         </script>
 
                                     </td>
+                                    <td>{{ $tr->created_at }}</td>
                                     <td>{{ $tr->transaction_time }}</td>
                                     <td>{{ $tr->settlement_time }}</td>
                                     <td>
@@ -294,6 +297,7 @@
                             <td>Total Bayar</td>
                             <td>Metode Pembayaran</td>
                             <td>Status Pembayaran</td>
+                            <td>Waktu transaksi dibuat</td>
                             <td>Waktu transaksi</td>
                             <td>Waktu Transaksi Lunas</td>
                             <td>Detail Pesanan</td>
@@ -336,6 +340,7 @@
                                             </p>
                                         @endif
                                     </td>
+                                    <td>{{ $tr->created_at }}</td>
                                     <td>{{ $tr->transaction_time }}</td>
                                     <td>{{ $tr->settlement_time }}</td>
                                     <td>
@@ -359,6 +364,7 @@
                             <td>Total Bayar</td>
                             <td>Metode Pembayaran</td>
                             <td>Status Pembayaran</td>
+                            <td>Waktu transaksi dibuat</td>
                             <td>Waktu transaksi</td>
                             <td>Waktu Transaksi Lunas</td>
                             <td>Detail Pesanan</td>
@@ -400,6 +406,7 @@
                                             </p>
                                         @endif
                                     </td>
+                                    <td>{{ $tr->created_at }}</td>
                                     <td>{{ $tr->transaction_time }}</td>
                                     <td>{{ $tr->settlement_time }}</td>
                                     <td>
@@ -448,7 +455,7 @@
                                     <tr>
                                         <td></td>
                                         <td> Lapangan</td>
-                                        <td> : {{ $ts->court->court_name }}</td>
+                                        <td> : {{ $ts->court_id }}</td>
                                     </tr>
                                     <tr>
                                         <td></td>

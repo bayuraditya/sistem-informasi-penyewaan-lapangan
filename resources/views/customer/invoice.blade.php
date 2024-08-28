@@ -56,4 +56,5 @@
             <a href="{{ route('home') }}" class="btn btn-primary">Home</a>
         </div>
     </div>
-@endsection
+@endsection 
+

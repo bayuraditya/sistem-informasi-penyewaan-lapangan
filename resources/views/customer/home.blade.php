@@ -57,10 +57,7 @@
                 <span class="visually-hidden">Next</span>
             </button>
             </div>
-
-
-
-                <!-- <img src="{{ asset('assets-user/img/facility.jpg') }}" alt="" class="img-fluid rounded-4"> -->
+                <img src="{{ asset('assets-user/img/2.jpg') }}" alt="" class="img-fluid rounded-4">
             </div>
             <div class="col-12 col-lg-6 order-1 order-md-1">
                 <h3>Fasilitas</h3>
@@ -113,22 +110,48 @@
             <div class="col-12">
                 <h3>Hubungi Kami</h3>
                 <p>Hubungi kami jika Anda memiliki pertanyaan atau masalah</p>
-                <form action="">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nama</label>
-                        <input type="text" class="form-control" id="name" name="name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">No HP</label>
-                        <input type="tel" id="phone" class="form-control" name="phone" pattern="[0-9]{10,15}"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Pesan</label>
-                        <textarea class="form-control" id="message" name="message" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Kirim</button>
-                </form>
+                <form id="emailForm">
+            <div class="mb-3">
+                <label for="name" class="form-label">Nama</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">No HP</label>
+                <input type="tel" id="phone" class="form-control" name="phone" pattern="[0-9]{10,15}" required>
+            </div>
+            <div class="mb-3">
+                <label for="message" class="form-label">Pesan</label>
+                <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Kirim</button>
+        </form>
+
+                <script>
+
+document.getElementById('emailForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Mencegah form dari submit secara default
+
+    // Mengambil nilai input dari form
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    const message = document.getElementById('message').value;
+
+    // Membuat isi email
+    const subject = `Message from ${name}`;
+    // const body = `Name: ${name}%0D%0APhone: ${phone}%0D%0AMessage: ${message}`;
+    const body = `Name: ${name}\nPhone: ${phone}\nMessage: ${message}`;
+    // Membuat link mailto dengan subject dan body
+    const mailtoLink = `mailto:sbc@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Mengarahkan browser ke link mailto
+    window.location.href = mailtoLink;
+});
+
+
+                </script>
+
+
+
             </div>
             <div class="col-12 col-lg-6">
                 <img src="{{ asset('assets/img/contact-us.jpg') }}" alt="" class="img-fluid rounded-4">
