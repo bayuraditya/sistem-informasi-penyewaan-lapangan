@@ -54,8 +54,12 @@ class ReservationController extends Controller
         $yesterdayString = $yesterday->format('Y-m-d');
 
         $user = Auth::user();
-        
-        return view('customer.available-courts', compact('unavailableReservations', 'reservations', 'date', 'court', 'allCourt', 'rentalSessions', 'user'));
+         if ($date <= $yesterdayString) {
+            return redirect()->route('home');
+        } else {
+            return view('customer.available-courts', compact('unavailableReservations', 'reservations', 'date', 'court', 'allCourt', 'rentalSessions', 'user'));
+        }
+        // return view('customer.available-courts', compact('unavailableReservations', 'reservations', 'date', 'court', 'allCourt', 'rentalSessions', 'user'));
     }
 
     public function book(Request $request){
@@ -84,10 +88,7 @@ class ReservationController extends Controller
     }
     
     public function store(Request $request){
-        if ($request->session()->has('has_reloaded')) {
-            // Halaman telah di-reload
-            return redirect('/home');
-        } 
+       
         $user = Auth::user();
         date_default_timezone_set('Asia/Shanghai');
         $date = $request->input('date');
@@ -112,9 +113,9 @@ class ReservationController extends Controller
                     $sandBoxPrice = 0;
                     // harga sementara selama pengembangan website
                     if ($price == 40000) {
-                        $sandBoxPrice = 40;
+                        $sandBoxPrice = 4;
                     } else if ($price == 50000) {
-                        $sandBoxPrice = 50;
+                        $sandBoxPrice = 5;
                     }
                     $totalAmount += $sandBoxPrice;
                     // $totalAmount += $price;
@@ -143,14 +144,14 @@ class ReservationController extends Controller
                     'last_name' => '',
                     'phone' => Auth::user()->handphone_number,
                 ),
-                'item_details' => array(
-                    array(
-                        'id' => $transaction_id,
-                        'price' => $totalAmount/=2,
-                        'quantity' => $amountReservation,
-                        'name' => 'Sesi Lapangan',
-                    ),
-                ),
+                // 'item_details' => array(
+                //     array(
+                //         'id' => $transaction_id,
+                //         'price' => $totalAmount/=2,
+                //         'quantity' => $amountReservation,
+                //         'name' => 'Sesi Lapangan',
+                //     ),
+                // ),
             );
             $order = $request;
             $snapToken = \Midtrans\Snap::getSnapToken($orderDetails);

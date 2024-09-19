@@ -35,6 +35,23 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+    /* 
+    klik lupa password, 
+    halaman lupa password masukan email klik send email, 
+    halaman email telah dikirim, 
+    di email klik link /reset-passowrd/{id}, 
+    halaman passowrd baru ok, 
+    halamanlogin
+*/
+// halaman lupa password, masukan email
+    Route::get('/forgot-password', [CustomerController::class, 'forgotPassword'])->name('forgotPassword');
+    //halaman email terkirim
+    Route::post('/send-mail', [CustomerController::class, 'sendEmail'])->name('sendEmail');
+    // halaman reset password
+    Route::get('/reset-password/{id}', [CustomerController::class, 'resetPassword'])->name('resetPassword');
+    //reset password baru
+    Route::put('/new-password/{id}', [CustomerController::class, 'newPassword'])->name('newPassword');
+           
 });
 
 
@@ -105,6 +122,8 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/change-password/{id}', [CustomerController::class, 'changePassword'])->name('changePassword');
             Route::get('/reservation-history', [CustomerController::class, 'reservationHistory'])->name('reservationHistory');
             Route::get('/transaction-history', [CustomerController::class, 'transactionHistory'])->name('transactionHistory');
+            Route::put('/reschedule', [CustomerController::class, 'reschedule'])->name('reschedule');
+
         });
     });
 });

@@ -105,7 +105,7 @@
                                 <td> {{ 'Rp ' . number_format($tr->total_amount, 0, ',', '.') }}</td>
                                 <td>{{ $tr->payment_method }}</td>
                                 <td>
-                                    @if ($tr->payment_status == 'settlement' || $tr->payment_status == 'capture')
+                                @if ($tr->payment_status == 'settlement' || $tr->payment_status == 'capture')
                                         <p class="text-success fw-bold">
                                             Lunas
                                         </p>
@@ -114,7 +114,7 @@
                                             Transaksi Dibatalkan
                                         </p>
                                     @elseif($tr->payment_status == 'pending')
-                                        <p class="badge text-bg-warning">
+                                        <p class="text-warning">
                                             Pending
                                         </p>
                                     @else

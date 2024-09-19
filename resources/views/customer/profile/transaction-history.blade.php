@@ -431,6 +431,8 @@
     <!-- Modal -->
 
     @foreach ($transactions as $tr)
+<h3 id="expireReschedule{{$tr->id}}"></h3>
+   
         <div class="modal fade" id="orderDetailModal_{{ $tr->id }}" tabindex="-1"
             aria-labelledby="orderDetailModal" aria-hidden="true">
             <div class="modal-dialog">
@@ -469,6 +471,98 @@
 
                     </div>
                     <div class="modal-footer">
+                    
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#orderDetailModalReschedule_{{ $tr->id }}" id="reschedule{{$tr->id}}">Reschedule</button>
+                            <script>
+                                let paymentStatus{{$tr->id}} = '{{$tr->payment_status}}'
+                                // console.log(paymentStatus{{$tr->id}});  
+                                if(paymentStatus{{$tr->id}} == 'settlement'){
+
+                                // String tanggal dan waktu awal
+                                let dateTimeStr{{$tr->id}} = '{{$tr->settlement_time}}';
+                                
+                                // Ubah string menjadi objek Date
+                                let dateParts{{$tr->id}} = dateTimeStr{{$tr->id}}.split(' ');
+                                let date{{$tr->id}} = dateParts{{$tr->id}}[0].split('-'); // Pisah tanggal
+                                let time{{$tr->id}} = dateParts{{$tr->id}}[1].split(':'); // Pisah waktu
+                                
+                                // Buat objek Date dari komponen tanggal dan waktu
+                                let currentDate{{$tr->id}} = new Date(
+                                    parseInt(date{{$tr->id}}[0]),       // Tahun
+                                    parseInt(date{{$tr->id}}[1]) - 1,   // Bulan (mulai dari 0, jadi dikurangi 1)
+                                    parseInt(date{{$tr->id}}[2]),       // Hari
+                                    parseInt(time{{$tr->id}}[0]),       // Jam
+                                    parseInt(time{{$tr->id}}[1]),       // Menit
+                                    parseInt(time{{$tr->id}}[2])        // Detik
+                                );
+                                
+                                // Tambahkan 60 menit
+                                currentDate{{$tr->id}}.setMinutes(currentDate{{$tr->id}}.getMinutes() + 60);
+                                
+                                // Fungsi untuk memformat angka agar selalu memiliki 2 digit
+                                function padToTwoDigits(num) {
+                                    return num.toString().padStart(2, '0');
+                                }
+                                
+                                // Format waktu setelah penambahan menjadi 'YYYY-MM-DD HH:MM:SS'
+                                let expireRescheduleTime{{$tr->id}} = currentDate{{$tr->id}}.getFullYear() + '-' +
+                                padToTwoDigits(currentDate{{$tr->id}}.getMonth() + 1) + '-' +
+                                padToTwoDigits(currentDate{{$tr->id}}.getDate()) + ' ' +
+                                padToTwoDigits(currentDate{{$tr->id}}.getHours()) + ':' +
+                                padToTwoDigits(currentDate{{$tr->id}}.getMinutes()) + ':' +
+                                padToTwoDigits(currentDate{{$tr->id}}.getSeconds());
+                                
+                                // document.getElementById("expireReschedule{{$tr->id}}").innerHTML = formattedDate{{$tr->id}}
+                                // document.getElementById("expireReschedule{{$tr->id}}").textContent = formattedDate{{$tr->id}}
+                                
+                                // console.log(expireRescheduleTime{{$tr->id}})
+                                let now = '{{$now}}';
+                                if(expireRescheduleTime{{$tr->id}} < now){
+                                    document.getElementById("reschedule{{$tr->id}}").disabled = true;
+                                    // document.getElementById('reschedule{{$tr->id}}').classList.add('visually-hidden');
+                                    // document.getElementById('reschedule{{$tr->id}}').innerHTML = 'ssss';
+                                    // console.log('s');
+                                // console.log(expireRescheduleTime{{$tr->id}} + '   ' + now)
+
+                                }else{
+                                    // document.getElementById("reschedule{{$tr->id}}").disabled = true;
+                                }
+                            }else{
+                                document.getElementById("reschedule{{$tr->id}}").disabled = true;
+
+                            }
+                                
+                        </script>
+                     
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="orderDetailModalReschedule_{{ $tr->id }}" tabindex="-1"
+            aria-labelledby="orderDetailModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Reschedule Order {{ $tr->id }}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/profile/reschedule" method="post">
+                            @csrf
+                            @method('PUT')
+                            
+                            @foreach ($tr->reservations as $ts)
+                                <input type="text" name="reservations[]" value="{{$ts->id}}" class="visually-hidden">                
+                            @endforeach
+                            
+                            <label for="rescheduleData">Pilih Tanggal Reschedule :</label><br><br>
+                            <input type="date" name="rescheduleDate" id=""> <br><br>
+                            <button type="submit" class="btn btn-warning" data-bs-dismiss="modal">Reschedule</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -476,3 +570,11 @@
         </div>
     @endforeach
 @endsection
+
+reschedule: 
+max 60menit + tanggal lunas, klo lunas baru bisa reschedule klo pending/expire enggak
+klik tombol 
+pilih Tanggal
+submit 
+edit tanggal reservasi foreach
+bawa id reservasi foreach, ubah tangggal foreach - routes baru,controller baru 

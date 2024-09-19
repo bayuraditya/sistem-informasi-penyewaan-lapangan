@@ -82,9 +82,9 @@
                             <ol class="list-group list-group-numbered">
                                 <li class="list-group-item">Reservasi tidak dapat dibatalkan atau direfund setelah
                                     pembayaran lunas.</li>
-                                <li class="list-group-item">Batas pelunasan adalah 5 menit setelah pesanan dibuat.</li>
-                                <li class="list-group-item">Jika setelah 5 menit pelunasan tidak dilakukan, maka pesanan
-                                    akan dicancel otomatis.</li>
+                                <li class="list-group-item">Batas pelunasan adalah 15 menit setelah pesanan dibuat.</li>
+                                <li class="list-group-item">Jika setelah 15 menit pelunasan tidak dilakukan, maka pesanan
+                                <li class="list-group-item">Pengunjung dapat melakukan reschedule di tanggal berbeda namun di lapangan dan jam yang sama maksimal 60 menit setelah setelah pelunasan</li>
                             </ol>
                         </div>
                     </div>
